@@ -1,1 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Medical Center Admin Panel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .toggle-sidebar {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--accent);
+            color: var(--white);
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        :root {
+            --primary: #00bfff;
+            --secondary: #f5faff;
+            --accent: #111;
+            --white: #fff;
+        }
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: var(--secondary);
+            color: var(--accent);
+        }
+        .sidebar {
+            position: fixed;
+            left: 0; top: 0; bottom: 0;
+            width: 220px;
+            background: var(--primary);
+            color: var(--white);
+            display: flex;
+            flex-direction: column;
+            padding: 30px 0;
+            box-shadow: 2px 0 8px #0001;
+        }
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 40px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .sidebar nav a {
+            display: block;
+            padding: 14px 32px;
+            color: var(--white);
+            text-decoration: none;
+            font-size: 1.08em;
+            border-left: 4px solid transparent;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .sidebar nav a.active, .sidebar nav a:hover {
+            background: #e6f7ff;
+            color: var(--primary);
+            border-left: 4px solid var(--accent);
+        }
+        .main {
+            margin-left: 220px;
+            padding: 40px 32px;
+            min-height: 100vh;
+            background: var(--secondary);
+            transition: background 0.3s;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+        .header h1 {
+            font-size: 2em;
+            font-weight: 600;
+        }
+        .logout-btn {
+            background: var(--accent);
+            color: var(--white);
+            border: none;
+            padding: 10px 22px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.2s;
+        }
+        .logout-btn:hover {
+            background: var(--primary);
+            color: var(--accent);
+        }
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+        }
+        .card {
+            background: var(--white);
+            border-radius: 14px;
+            box-shadow: 0 2px 12px #0001;
+            padding: 28px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            transition: box-shadow 0.2s;
+        }
+        .card:hover {
+            box-shadow: 0 4px 24px #00bfff22;
+        }
+        .card h3 {
+            margin: 0 0 12px;
+            font-size: 1.2em;
+            color: var(--primary);
+        }
+        .card p {
+            margin: 0 0 18px;
+            color: #333;
+        }
+        .card button {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 8px 18px;
+            border-radius: 16px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.2s;
+        }
+        .card button:hover {
+            background: var(--accent);
+            color: var(--white);
+        }
+        /* Responsive */
+        @media (max-width: 700px) {
+            .sidebar { width: 60px; padding: 10px 0; transition: width 0.3s; }
+            .sidebar.expanded { width: 220px; }
+            .sidebar h2 { font-size: 1em; margin-bottom: 20px; }
+            .sidebar nav a { padding: 10px 10px; font-size: 0.95em; }
+            .main { margin-left: 60px; padding: 20px 8px; }
+            .header h1 { font-size: 1.2em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar" id="sidebar">
+        <button id="toggle-sidebar" class="toggle-sidebar">☰</button>
+        <h2>Admin Panel</h2>
+        <nav>
+            <a href="#" class="active" data-section="dashboard" onclick="showSection('dashboard')">Dashboard</a>
+            <a href="#" data-section="doctors" onclick="showSection('doctors')">Doctors</a>
+            <a href="#" data-section="experiment" onclick="showSection('experiments')">Experiments</a>
+            <a href="#" data-section="appointments" onclick="showSection('appointments')">Appointments</a>
+            <a href="#" data-section="medicines" onclick="showSection('medicines')">Medicines</a>
+            <a href="#" data-section="settings" onclick="showSection('settings')">Settings</a>
+        </nav>
+    </div>
+    <div class="main">
+        <div class="header">
+            <h1 id="section-title">Dashboard</h1>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+        <div id="dashboard" class="section">
+            <div class="card-grid">
+                <div class="card">
+                    <h3>Total Doctors</h3>
+                    <p id="doctor-count">12</p>
+                    <button onclick="showSection('doctors')">View Doctors</button>
+                </div>
+                <div class="card">
+                    <h3>Total Experiments</h3>
+                    <p id="experiment">56</p>
+                    <button onclick="showSection('experiments')">View Experiments</button>
+                </div>
+                <div class="card">
+                    <h3>Upcoming Appointments</h3>
+                    <p id="appointment-count">8</p>
+                    <button onclick="showSection('appointments')">View Appointments</button>
+                </div>
+                <div class="card">
+                    <h3>Total Medicines</h3>
+                    <p id="medicine-count">2000</p>
+                    <button onclick="showSection('medicines')">View Medicines</button>
+                </div>
+            </div>
+        </div>
+        <div id="doctors" class="section" style="display:none">
+            <h2>Doctors</h2>
+            <button onclick="addDoctor()" style="margin-bottom:12px;">+ Add Doctor</button>
+            <table border="0" cellpadding="8" cellspacing="0" style="width:100%;background:#fff;border-radius:8px;box-shadow:0 1px 8px #00bfff11;">
+                <thead style="background:#e6f7ff;">
+                    <tr>
+                        <th>Name</th><th>Specialty</th><th>Phone</th><th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="doctor-table">
+                    <!-- JS will fill -->
+                </tbody>
+            </table>
+        </div>
+        <div id="experiments" class="section" style="display:none">
+            <h2>Experiments</h2>
+            <button onclick="addExperiment()" style="margin-bottom:12px;">+ Add Experiment</button>
+            <table border="0" cellpadding="8" cellspacing="0" style="width:100%;background:#fff;border-radius:8px;box-shadow:0 1px 8px #00bfff11;">
+                <thead style="background:#e6f7ff;">
+                    <tr>
+                        <th>ID</th><th>Name</th><th>Lead</th><th>Status</th><th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="experiment-table">
+                    <!-- JS will fill -->
+                </tbody>
+            </table>
+        </div>
+        <div id="appointments" class="section" style="display:none">
+            <h2>Appointments</h2>
+            <button onclick="addAppointment()" style="margin-bottom:12px;">+ Add Appointment</button>
+            <table border="0" cellpadding="8" cellspacing="0" style="width:100%;background:#fff;border-radius:8px;box-shadow:0 1px 8px #00bfff11;">
+                <thead style="background:#e6f7ff;">
+                    <tr>
+                        <th>Patient</th><th>Doctor</th><th>Date</th><th>Time</th><th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="appointment-table">
+                    <!-- JS will fill -->
+                </tbody>
+            </table>
+        </div>
+        <div id="medicines" class="section" style="display:none">
+            <h2>Medicines</h2>
+            <button onclick="addMedicine()" style="margin-bottom:12px;">+ Add Medicine</button>
+            <table border="0" cellpadding="8" cellspacing="0" style="width:100%;background:#fff;border-radius:8px;box-shadow:0 1px 8px #00bfff11;">
+                <thead style="background:#e6f7ff;">
+                    <tr>
+                        <th>Name</th><th>Company</th><th>Phone</th><th>Type</th><th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="medicine-table">
+                    <!-- JS will fill -->
+                </tbody>
+            </table>
+        </div>
+        <div id="settings" class="section" style="display:none">
+            <h2>Settings</h2>
+            <p>Change password, update profile, etc.</p>
+            <button onclick="alert('Settings saved!')">Save Settings</button>
+        </div>
+    </div>
+    <script>
+        document.getElementById('toggle-sidebar').addEventListener('click', () => {
+            const sidebar = document.getElementById('sidebar');
+            const main = document.querySelector('.main');
+            sidebar.classList.toggle('expanded');
+            if (sidebar.classList.contains('expanded')) {
+                main.style.marginLeft = '220px';
+            } else {
+                main.style.marginLeft = '60px';
+            }
+        });
+        let doctors = [
+            {name: "Dr. Ayesha Khan", specialty: "Cardiologist", phone: "123-456-7890"},
+            {name: "Dr. John Smith", specialty: "Dermatologist", phone: "234-567-8901"},
+        ];
+        let patients = [
+            {name: "Ali Raza", age: 32, phone: "345-678-9012"},
+            {name: "Sara Ahmed", age: 25, phone: "456-789-0123"},
+        ];
+        let appointments = [
+            {patient: "Ali Raza", doctor: "Dr. Ayesha Khan", date: "2024-06-10", time: "10:00 AM"},
+            {patient: "Sara Ahmed", doctor: "Dr. John Smith", date: "2024-06-11", time: "11:30 AM"},
+        ];
+        let medicines = [
+            {name: "Paracetamol", company: "Pharma Co.", phone: "567-890-1234", type: "Painkiller"},
+            {name: "Amoxicillin", company: "Health Inc.", phone: "678-901-2345", type: "Antibiotic"},
+        ];
+        let experiments = [
+            {id: "EXP001", name: "COVID-19 Vaccine Trial", lead: "Dr. Ayesha Khan", status: "Ongoing"},
+            {id: "EXP002", name: "Diabetes Management Study", lead: "Dr. John Smith", status: "Completed"},
+        ];
 
+        function showSection(section) {
+            document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+            document.getElementById(section).style.display = '';
+            document.querySelectorAll('.sidebar nav a').forEach(a => a.classList.remove('active'));
+            let navLinks = document.querySelectorAll('.sidebar nav a');
+            navLinks.forEach(a => {
+                if (a.getAttribute('data-section') === section) a.classList.add('active');
+                if (section === 'dashboard' && a.textContent.trim().toLowerCase() === 'dashboard') a.classList.add('active');
+            });
+            document.getElementById('section-title').textContent = section.charAt(0).toUpperCase() + section.slice(1);
+            if (section === 'doctors') renderDoctors();
+            if (section === 'experiments') renderExperiments();
+            if (section === 'appointments') renderAppointments();
+            if (section === 'medicines') renderMedicines();
+            if (section === 'dashboard') updateDashboard();
+        }
+
+        function updateDashboard() {
+            document.getElementById('doctor-count').textContent = doctors.length;
+            document.getElementById('experiment-count').textContent = experiments.length;
+            document.getElementById('appointment-count').textContent = appointments.length;
+            document.getElementById('medicine-count').textContent = medicines.length;
+        }
+
+        function renderDoctors() {
+            let html = '';
+            doctors.forEach((d, i) => {
+                html += `<tr>
+                    <td>${d.name}</td>
+                    <td>${d.specialty}</td>
+                    <td>${d.phone}</td>
+                    <td>
+                        <button onclick="editDoctor(${i})">Edit</button>
+                        <button onclick="deleteDoctor(${i})" style="background:#111;color:#fff;">Delete</button>
+                    </td>
+                </tr>`;
+            });
+            document.getElementById('doctor-table').innerHTML = html;
+        }
+        function renderExperiments() {
+            let html = '';
+            experiments.forEach((e, i) => {
+                html += `<tr>
+                    <td>${e.id}</td>
+                    <td>${e.name}</td>
+                    <td>${e.lead}</td>
+                    <td>${e.status}</td>
+                    <td>
+                        <button onclick="editExperiment(${i})">Edit</button>
+                        <button onclick="deleteExperiment(${i})" style="background:#111;color:#fff;">Delete</button>
+                    </td>
+                </tr>`;
+            });
+            document.getElementById('experiment-table').innerHTML = html;
+        }
+        function renderAppointments() {
+            let html = '';
+            appointments.forEach((a, i) => {
+                html += `<tr>
+                    <td>${a.patient}</td>
+                    <td>${a.doctor}</td>
+                    <td>${a.date}</td>
+                    <td>${a.time}</td>
+                    <td>
+                        <button onclick="editAppointment(${i})">Edit</button>
+                        <button onclick="deleteAppointment(${i})" style="background:#111;color:#fff;">Delete</button>
+                    </td>
+                </tr>`;
+            });
+            document.getElementById('appointment-table').innerHTML = html;
+        }
+        function renderMedicines() {
+            let html = '';
+            medicines.forEach((m, i) => {
+                html += `<tr>
+                    <td>${m.name}</td>
+                    <td>${m.company}</td>
+                    <td>${m.phone}</td>
+                    <td>${m.type}</td>
+                    <td>
+                        <button onclick="editMedicine(${i})">Edit</button>
+                        <button onclick="deleteMedicine(${i})" style="background:#111;color:#fff;">Delete</button>
+                    </td>
+                </tr>`;
+            });
+            document.getElementById('medicine-table').innerHTML = html;
+        }
+
+        function addDoctor() {
+            let name = prompt("Doctor's Name:");
+            if (!name) return;
+            let specialty = prompt("Specialty:");
+            if (!specialty) return;
+            let phone = prompt("Phone:");
+            if (!phone) return;
+            doctors.push({name, specialty, phone});
+            renderDoctors(); updateDashboard();
+        }
+        function editDoctor(i) {
+            let d = doctors[i];
+            let name = prompt("Doctor's Name:", d.name);
+            if (!name) return;
+            let specialty = prompt("Specialty:", d.specialty);
+            if (!specialty) return;
+            let phone = prompt("Phone:", d.phone);
+            if (!phone) return;
+            doctors[i] = {name, specialty, phone};
+            renderDoctors(); updateDashboard();
+        }
+        function deleteDoctor(i) {
+            if (confirm("Delete this doctor?")) {
+                doctors.splice(i, 1);
+                renderDoctors(); updateDashboard();
+            }
+        }
+        function addExperiment() {
+            let id = prompt("Experiment ID:");
+            if (!id) return;
+            let name = prompt("Experiment name:");
+            if (!name) return;
+            let lead = prompt("Lead:", e.lead);
+            if (!lead) return;
+            let status = prompt("Status (e.g. ongoing, completed):");
+            if (!status) return;
+            experiments.push({id, name, lead, status});
+            renderExperiments(); updateDashboard();
+        }
+        function editExperiment(i) {
+            let p = experiments[i];
+            let id = prompt("Experiment ID:", e.id);
+            if (!id) return;
+            let name = prompt("Experiment name:", e.name);
+            if (!name) return;
+            let lead = prompt("Lead:", e.lead);
+            if (!lead) return;
+            let status = prompt("Status (e.g. ongoing, completed):", e.status);
+            if (!status) return;
+            experiments[i] = {id, name, lead, status};
+            renderExperiments(); updateDashboard();
+        }
+        function deleteExperiment(i) {
+            if (confirm("Delete this experiment?")) {
+                experiments.splice(i, 1);
+                renderExperiments(); updateDashboard();
+            }
+        }
+        function addAppointment() {
+            let patient = prompt("Patient Name:");
+            if (!patient) return;
+            let doctor = prompt("Doctor Name:");
+            if (!doctor) return;
+            let date = prompt("Date (YYYY-MM-DD):");
+            if (!date) return;
+            let time = prompt("Time (e.g. 10:00 AM):");
+            if (!time) return;
+            appointments.push({patient, doctor, date, time});
+            renderAppointments(); updateDashboard();
+        }
+        function editAppointment(i) {
+            let a = appointments[i];
+            let patient = prompt("Patient Name:", a.patient);
+            if (!patient) return;
+            let doctor = prompt("Doctor Name:", a.doctor);
+            if (!doctor) return;
+            let date = prompt("Date (YYYY-MM-DD):", a.date);
+            if (!date) return;
+            let time = prompt("Time (e.g. 10:00 AM):", a.time);
+            if (!time) return;
+            appointments[i] = {patient, doctor, date, time};
+            renderAppointments(); updateDashboard();
+        }
+        function deleteAppointment(i) {
+            if (confirm("Delete this appointment?")) {
+                appointments.splice(i, 1);
+                renderAppointments(); updateDashboard();
+            }
+        }
+        function addMedicine() {
+            let name = prompt("Medicine Name:");
+            if (!name) return;
+            let company = prompt("Company:");
+            if (!company) return;
+            let phone = prompt("Phone:");
+            if (!phone) return;
+            let type = prompt("Type:");
+            if (!type) return;
+            medicines.push({name, company, phone, type});
+            renderMedicines(); updateDashboard();
+        }
+        function editMedicine(i) {
+            let m = medicines[i];
+            let name = prompt("Medicine Name:", m.name);
+            if (!name) return;
+            let company = prompt("Company:", m.company);
+            if (!company) return;
+            let phone = prompt("Phone:", m.phone);
+            if (!phone) return;
+            let type = prompt("Type:", m.type);
+            if (!type) return;
+            medicines[i] = {name, company, phone, type};
+            renderMedicines(); updateDashboard();
+        }
+        function deleteMedicine(i) {
+            if (confirm("Delete this medicine?")) {
+                medicines.splice(i, 1);
+                renderMedicines(); updateDashboard();
+            }
+        }
+        function logout() {
+            alert('Logged out!');
+            // Redirects to the login page after logout
+            // location.href = '/login.html';
+        }
+
+        // Initial render
+        updateDashboard();
+        renderDoctors();
+        renderExperiments();
+        renderAppointments();
+        renderMedicines();
+    </script>
+</body>
+</html>
