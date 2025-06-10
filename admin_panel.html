@@ -39,6 +39,14 @@
             padding: 30px 0;
             box-shadow: 2px 0 8px #0001;
         }
+        .sidebar.collapsed {
+            width: 60px !important;
+            overflow: hidden;
+            transition: width 0.3s;
+        }
+        .sidebar.collapsed h2 {
+            display: none;
+        }
         .sidebar h2 {
             text-align: center;
             margin-bottom: 40px;
@@ -59,12 +67,19 @@
             color: var(--primary);
             border-left: 4px solid var(--accent);
         }
+        .sidebar.collapsed nav {
+            display: none;
+        }
         .main {
             margin-left: 220px;
             padding: 40px 32px;
             min-height: 100vh;
             background: var(--secondary);
             transition: background 0.3s;
+        }
+        .main.collapsed {
+            margin-left: 60px !important;
+            transition: margin-left 0.3s;
         }
         .header {
             display: flex;
@@ -132,7 +147,7 @@
             color: var(--white);
         }
         /* Responsive */
-        @media (max-width: 700px) {
+        @media (max-width: 43.75em) {
             .sidebar { width: 60px; padding: 10px 0; transition: width 0.3s; }
             .sidebar.expanded { width: 220px; }
             .sidebar h2 { font-size: 1em; margin-bottom: 20px; }
@@ -147,12 +162,13 @@
         <button id="toggle-sidebar" class="toggle-sidebar">☰</button>
         <h2>Admin Panel</h2>
         <nav>
-            <a href="#" class="active" data-section="dashboard" onclick="showSection('dashboard')">Dashboard</a>
-            <a href="#" data-section="doctors" onclick="showSection('doctors')">Doctors</a>
-            <a href="#" data-section="experiment" onclick="showSection('experiments')">Experiments</a>
-            <a href="#" data-section="appointments" onclick="showSection('appointments')">Appointments</a>
-            <a href="#" data-section="medicines" onclick="showSection('medicines')">Medicines</a>
-            <a href="#" data-section="settings" onclick="showSection('settings')">Settings</a>
+            <a href="#" class="active" data-section="dashboard" onclick="toggleSectionVisibility('dashboard')">Dashboard</a>
+            <a href="#" data-section="doctors" onclick="toggleSectionVisibility('doctors')">Doctors</a>
+            <a href="#" data-section="experiment" onclick="toggleSectionVisibility('experiments')">Experiments</a>
+            <a href="#" data-section="appointments" onclick="toggleSectionVisibility('appointments')">Appointments</a>
+            <a href="#" data-section="medicines" onclick="toggleSectionVisibility('medicines')">Medicines</a>
+            <a href="#" data-section="ambulances" onclick="toggleSectionVisibility('ambulances')">Ambulance</a>
+            <a href="#" data-section="settings" onclick="toggleSectionVisibility('settings')">Settings</a>
         </nav>
     </div>
     <div class="main">
@@ -169,7 +185,7 @@
                 </div>
                 <div class="card">
                     <h3>Total Experiments</h3>
-                    <p id="experiment">56</p>
+                    <p id="experiment-count">56</p>
                     <button onclick="showSection('experiments')">View Experiments</button>
                 </div>
                 <div class="card">
@@ -190,7 +206,11 @@
             <table border="0" cellpadding="8" cellspacing="0" style="width:100%;background:#fff;border-radius:8px;box-shadow:0 1px 8px #00bfff11;">
                 <thead style="background:#e6f7ff;">
                     <tr>
-                        <th>Name</th><th>Specialty</th><th>Phone</th><th>Actions</th>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Specialty</th>
+                        <th>Phone</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody id="doctor-table">
@@ -204,7 +224,12 @@
             <table border="0" cellpadding="8" cellspacing="0" style="width:100%;background:#fff;border-radius:8px;box-shadow:0 1px 8px #00bfff11;">
                 <thead style="background:#e6f7ff;">
                     <tr>
-                        <th>ID</th><th>Name</th><th>Lead</th><th>Status</th><th>Actions</th>
+                        <th>Image</th>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Lead</th>
+                        <th>Status</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody id="experiment-table">
@@ -218,7 +243,11 @@
             <table border="0" cellpadding="8" cellspacing="0" style="width:100%;background:#fff;border-radius:8px;box-shadow:0 1px 8px #00bfff11;">
                 <thead style="background:#e6f7ff;">
                     <tr>
-                        <th>Patient</th><th>Doctor</th><th>Date</th><th>Time</th><th>Actions</th>
+                        <th>Patient</th>
+                        <th>Doctor</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody id="appointment-table">
@@ -232,10 +261,33 @@
             <table border="0" cellpadding="8" cellspacing="0" style="width:100%;background:#fff;border-radius:8px;box-shadow:0 1px 8px #00bfff11;">
                 <thead style="background:#e6f7ff;">
                     <tr>
-                        <th>Name</th><th>Company</th><th>Phone</th><th>Type</th><th>Actions</th>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Company</th>
+                        <th>Phone</th>
+                        <th>Type</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody id="medicine-table">
+                    <!-- JS will fill -->
+                </tbody>
+            </table>
+        </div>
+        <div id="ambulances" class="section" style="display:none">
+            <h2>Ambulance</h2>
+            <button onclick="addAmbulance()" style="margin-bottom:12px;">+ Add Ambulance</button>
+            <table border="0" cellpadding="8" cellspacing="0" style="width:100%;background:#fff;border-radius:8px;box-shadow:0 1px 8px #00bfff11;">
+                <thead style="background:#e6f7ff;">
+                    <tr>
+                        <th>Number</th>
+                        <th>Driver</th>
+                        <th>Phone</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="ambulance-table">
                     <!-- JS will fill -->
                 </tbody>
             </table>
@@ -250,35 +302,31 @@
         document.getElementById('toggle-sidebar').addEventListener('click', () => {
             const sidebar = document.getElementById('sidebar');
             const main = document.querySelector('.main');
-            sidebar.classList.toggle('expanded');
-            if (sidebar.classList.contains('expanded')) {
-                main.style.marginLeft = '220px';
-            } else {
-                main.style.marginLeft = '60px';
-            }
+            sidebar.classList.toggle('collapsed');
+            main.classList.toggle('collapsed');
         });
         let doctors = [
-            {name: "Dr. Ayesha Khan", specialty: "Cardiologist", phone: "123-456-7890"},
-            {name: "Dr. John Smith", specialty: "Dermatologist", phone: "234-567-8901"},
-        ];
-        let patients = [
-            {name: "Ali Raza", age: 32, phone: "345-678-9012"},
-            {name: "Sara Ahmed", age: 25, phone: "456-789-0123"},
+            {name: "Dr. Ilias Khan", specialty: "Cardiologist", phone: "123-456-7890", image: "d1.jpg"},
+            {name: "Dr. Akbar Shah", specialty: "Dermatologist", phone: "234-567-8901", image: "d2.jpg"},
         ];
         let appointments = [
             {patient: "Ali Raza", doctor: "Dr. Ayesha Khan", date: "2024-06-10", time: "10:00 AM"},
             {patient: "Sara Ahmed", doctor: "Dr. John Smith", date: "2024-06-11", time: "11:30 AM"},
         ];
         let medicines = [
-            {name: "Paracetamol", company: "Pharma Co.", phone: "567-890-1234", type: "Painkiller"},
-            {name: "Amoxicillin", company: "Health Inc.", phone: "678-901-2345", type: "Antibiotic"},
+            {name: "Paracetamol", company: "Pharma Co.", phone: "567-890-1234", type: "Painkiller", image:"m1.jpg"},
+            {name: "Amoxicillin", company: "Health Inc.", phone: "678-901-2345", type: "Antibiotic", image:"m2.jpg"},
         ];
         let experiments = [
-            {id: "EXP001", name: "COVID-19 Vaccine Trial", lead: "Dr. Ayesha Khan", status: "Ongoing"},
-            {id: "EXP002", name: "Diabetes Management Study", lead: "Dr. John Smith", status: "Completed"},
+            {id: "EXP001", name: "COVID-19 Vaccine Trial", lead: "Dr. Ayesha Khan", status: "Ongoing", image: "e1.jpg"},
+            {id: "EXP002", name: "Diabetes Management Study", lead: "Dr. John Smith", status: "Completed", image: "e2.jpg"},
+        ];
+        let ambulances = [
+            {number: "AMB-001", driver: "Ali Hassan", phone: "0300-1234567", status: "Available"},
+            {number: "AMB-002", driver: "Sara Khan", phone: "0301-7654321", status: "On Duty"}
         ];
 
-        function showSection(section) {
+        function toggleSectionVisibility(section) {
             document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
             document.getElementById(section).style.display = '';
             document.querySelectorAll('.sidebar nav a').forEach(a => a.classList.remove('active'));
@@ -292,6 +340,7 @@
             if (section === 'experiments') renderExperiments();
             if (section === 'appointments') renderAppointments();
             if (section === 'medicines') renderMedicines();
+            if (section === 'ambulances') renderAmbulances();
             if (section === 'dashboard') updateDashboard();
         }
 
@@ -300,12 +349,18 @@
             document.getElementById('experiment-count').textContent = experiments.length;
             document.getElementById('appointment-count').textContent = appointments.length;
             document.getElementById('medicine-count').textContent = medicines.length;
+            document.getElementById('ambulance-count').textContent = ambulances.length;
         }
 
         function renderDoctors() {
             let html = '';
             doctors.forEach((d, i) => {
                 html += `<tr>
+                    <td>
+                        ${d.image ? `<img src="${d.image}" alt="Doctor" style="width:40px;height:40px;border-radius:50%;">` : ''}
+                        <button onclick="uploadDoctorImage(${i})">${d.image ? 'Change' : 'Add'} Photo</button>
+                        ${d.image ? `<button onclick="deleteDoctor(${i}, true)" style="background:#f00;color:#fff;">Delete Photo</button>` : ''}
+                    </td>
                     <td>${d.name}</td>
                     <td>${d.specialty}</td>
                     <td>${d.phone}</td>
@@ -321,6 +376,11 @@
             let html = '';
             experiments.forEach((e, i) => {
                 html += `<tr>
+                    <td>
+                        ${e.image ? `<img src="${e.image}" alt="Experiment" style="width:40px;height:40px;border-radius:50%;">` : ''}
+                        <button onclick="uploadExperimentImage(${i})">${e.image ? 'Change' : 'Add'} Photo</button>
+                        ${e.image ? `<button onclick="deleteExperiment(${i}, true)" style="background:#f00;color:#fff;">Delete Photo</button>` : ''}
+                    </td>
                     <td>${e.id}</td>
                     <td>${e.name}</td>
                     <td>${e.lead}</td>
@@ -353,6 +413,11 @@
             let html = '';
             medicines.forEach((m, i) => {
                 html += `<tr>
+                    <td>
+                        ${m.image ? `<img src="${m.image}" alt="Medicine" style="width:40px;height:40px;border-radius:50%;">` : ''}
+                        <button onclick="uploadMedicineImage(${i})">${m.image ? 'Change' : 'Add'} Photo</button>
+                        ${m.image ? `<button onclick="deleteMedicine(${i}, true)" style="background:#f00;color:#fff;">Delete Photo</button>` : ''}
+                    </td>
                     <td>${m.name}</td>
                     <td>${m.company}</td>
                     <td>${m.phone}</td>
@@ -365,6 +430,22 @@
             });
             document.getElementById('medicine-table').innerHTML = html;
         }
+        function renderAmbulances() {
+            let html = '';
+            ambulances.forEach((a, i) => {
+                html += `<tr>
+                    <td>${a.number}</td>
+                    <td>${a.driver}</td>
+                    <td>${a.phone}</td>
+                    <td>${a.status}</td>
+                    <td>
+                        <button onclick="editAmbulance(${i})">Edit</button>
+                        <button onclick="deleteAmbulance(${i})" style="background:#111;color:#fff;">Delete</button>
+                    </td>
+                </tr>`;
+            });
+            document.getElementById('ambulance-table').innerHTML = html;
+        }
 
         function addDoctor() {
             let name = prompt("Doctor's Name:");
@@ -373,8 +454,29 @@
             if (!specialty) return;
             let phone = prompt("Phone:");
             if (!phone) return;
-            doctors.push({name, specialty, phone});
-            renderDoctors(); updateDashboard();
+            if (confirm("Add a photo for this doctor?")) {
+                let input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*';
+                input.onchange = e => {
+                    let file = e.target.files[0];
+                    if (!file) {
+                        doctors.push({name, specialty, phone, image: ""});
+                        renderDoctors(); updateDashboard();
+                        return;
+                    }
+                    let reader = new FileReader();
+                    reader.onload = function(evt) {
+                        doctors.push({name, specialty, phone, image: evt.target.result});
+                        renderDoctors(); updateDashboard();
+                    };
+                    reader.readAsDataURL(file);
+                };
+                input.click();
+            } else {
+                doctors.push({name, specialty, phone, image: ""});
+                renderDoctors(); updateDashboard();
+            }
         }
         function editDoctor(i) {
             let d = doctors[i];
@@ -384,10 +486,69 @@
             if (!specialty) return;
             let phone = prompt("Phone:", d.phone);
             if (!phone) return;
-            doctors[i] = {name, specialty, phone};
+
+            // Ask if user wants to change or remove the photo
+            let image = d.image || "";
+            let imgAction = "";
+            if (image) {
+                imgAction = prompt("Type 'remove' to delete photo, 'keep' to keep current, or 'change' to upload new photo:", "keep");
+                if (imgAction === "remove") {
+                    image = "";
+                } else if (imgAction === "change") {
+                    let input = document.createElement('input');
+                    input.type = 'file';
+                    input.accept = 'image/*';
+                    input.onchange = e => {
+                        let file = e.target.files[0];
+                        if (!file) {
+                            doctors[i] = {name, specialty, phone, image: ""};
+                            renderDoctors(); updateDashboard();
+                            return;
+                        }
+                        let reader = new FileReader();
+                        reader.onload = function(evt) {
+                            doctors[i] = {name, specialty, phone, image: evt.target.result};
+                            renderDoctors(); updateDashboard();
+                        };
+                        reader.readAsDataURL(file);
+                    };
+                    input.click();
+                    return; // Wait for file input
+                }
+            } else {
+                if (confirm("Add a photo for this doctor?")) {
+                    let input = document.createElement('input');
+                    input.type = 'file';
+                    input.accept = 'image/*';
+                    input.onchange = e => {
+                        let file = e.target.files[0];
+                        if (!file) {
+                            doctors[i] = {name, specialty, phone, image: ""};
+                            renderDoctors(); updateDashboard();
+                            return;
+                        }
+                        let reader = new FileReader();
+                        reader.onload = function(evt) {
+                            doctors[i] = {name, specialty, phone, image: evt.target.result};
+                            renderDoctors(); updateDashboard();
+                        };
+                        reader.readAsDataURL(file);
+                    };
+                    input.click();
+                    return; // Wait for file input
+                }
+            }
+            doctors[i] = {name, specialty, phone, image};
             renderDoctors(); updateDashboard();
         }
-        function deleteDoctor(i) {
+        function deleteDoctor(i, onlyPhoto = false) {
+            if (onlyPhoto) {
+                if (confirm("Delete this doctor's photo?")) {
+                    doctors[i].image = "";
+                    renderDoctors();
+                }
+                return;
+            }
             if (confirm("Delete this doctor?")) {
                 doctors.splice(i, 1);
                 renderDoctors(); updateDashboard();
@@ -398,15 +559,36 @@
             if (!id) return;
             let name = prompt("Experiment name:");
             if (!name) return;
-            let lead = prompt("Lead:", e.lead);
+            let lead = prompt("Lead:", "");
             if (!lead) return;
             let status = prompt("Status (e.g. ongoing, completed):");
             if (!status) return;
-            experiments.push({id, name, lead, status});
-            renderExperiments(); updateDashboard();
+            if (confirm("Add a photo for this experiment?")) {
+                let input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*';
+                input.onchange = e => {
+                    let file = e.target.files[0];
+                    if (!file) {
+                        experiments.push({name, specialty, phone, image: ""});
+                        renderExperiments(); updateDashboard();
+                        return;
+                    }
+                    let reader = new FileReader();
+                    reader.onload = function(evt) {
+                        doctors.push({name, specialty, phone, image: evt.target.result});
+                        renderExperiments(); updateDashboard();
+                    };
+                    reader.readAsDataURL(file);
+                };
+                input.click();
+            } else {
+                experiments.push({id, name, lead, status});
+                renderExperiments(); updateDashboard();
+            }
         }
         function editExperiment(i) {
-            let p = experiments[i];
+            let e = experiments[i];
             let id = prompt("Experiment ID:", e.id);
             if (!id) return;
             let name = prompt("Experiment name:", e.name);
@@ -415,6 +597,57 @@
             if (!lead) return;
             let status = prompt("Status (e.g. ongoing, completed):", e.status);
             if (!status) return;
+
+            let image = e.image || "";
+            let imgAction = "";
+            if (image) {
+                imgAction = prompt("Type 'remove' to delete photo, 'keep' to keep current, or 'change' to upload new photo:", "keep");
+                if (imgAction === "remove") {
+                    image = "";
+                } else if (imgAction === "change") {
+                    let input = document.createElement('input');
+                    input.type = 'file';
+                    input.accept = 'image/*';
+                    input.onchange = e => {
+                        let file = e.target.files[0];
+                        if (!file) {
+                            experiments[i] = {name, specialty, phone, image: ""};
+                            renderExperiments(); updateDashboard();
+                            return;
+                        }
+                        let reader = new FileReader();
+                        reader.onload = function(evt) {
+                            experiments[i] = {name, specialty, phone, image: evt.target.result};
+                            renderExperiments(); updateDashboard();
+                        };
+                        reader.readAsDataURL(file);
+                    };
+                    input.click();
+                    return; // Wait for file input
+                }
+            } else {
+                if (confirm("Add a photo for this experiment?")) {
+                    let input = document.createElement('input');
+                    input.type = 'file';
+                    input.accept = 'image/*';
+                    input.onchange = e => {
+                        let file = e.target.files[0];
+                        if (!file) {
+                            experiments[i] = {name, specialty, phone, image: ""};
+                            renderExperiments(); updateDashboard();
+                            return;
+                        }
+                        let reader = new FileReader();
+                        reader.onload = function(evt) {
+                            doctors[i] = {name, specialty, phone, image: evt.target.result};
+                            renderExperiments(); updateDashboard();
+                        };
+                        reader.readAsDataURL(file);
+                    };
+                    input.click();
+                    return; // Wait for file input
+                }
+            }
             experiments[i] = {id, name, lead, status};
             renderExperiments(); updateDashboard();
         }
@@ -464,8 +697,29 @@
             if (!phone) return;
             let type = prompt("Type:");
             if (!type) return;
-            medicines.push({name, company, phone, type});
-            renderMedicines(); updateDashboard();
+            if (confirm("Add a photo for this medicine?")) {
+                let input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*';
+                input.onchange = e => {
+                    let file = e.target.files[0];
+                    if (!file) {
+                        medicines.push({name, company, phone, type, image: ""});
+                        renderMedicines(); updateDashboard();
+                        return;
+                    }
+                    let reader = new FileReader();
+                    reader.onload = function(evt) {
+                        medicines.push({name, company, phone, type, image: evt.target.result});
+                        renderMedicines(); updateDashboard();
+                    };
+                    reader.readAsDataURL(file);
+                };
+                input.click();
+            } else {
+                medicines.push({name, company, phone, type, image: ""});
+                renderMedicines(); updateDashboard();
+            }
         }
         function editMedicine(i) {
             let m = medicines[i];
@@ -477,10 +731,68 @@
             if (!phone) return;
             let type = prompt("Type:", m.type);
             if (!type) return;
-            medicines[i] = {name, company, phone, type};
+
+            let image = m.image || "";
+            let imgAction = "";
+            if (image) {
+                imgAction = prompt("Type 'remove' to delete photo, 'keep' to keep current, or 'change' to upload new photo:", "keep");
+                if (imgAction === "remove") {
+                    image = "";
+                } else if (imgAction === "change") {
+                    let input = document.createElement('input');
+                    input.type = 'file';
+                    input.accept = 'image/*';
+                    input.onchange = e => {
+                        let file = e.target.files[0];
+                        if (!file) {
+                            medicines[i] = {name, company, phone, type, image: ""};
+                            renderMedicines(); updateDashboard();
+                            return;
+                        }
+                        let reader = new FileReader();
+                        reader.onload = function(evt) {
+                            medicines[i] = {name, company, phone, type, image: evt.target.result};
+                            renderMedicines(); updateDashboard();
+                        };
+                        reader.readAsDataURL(file);
+                    };
+                    input.click();
+                    return; // Wait for file input
+                }
+            } else {
+                if (confirm("Add a photo for this medicine?")) {
+                    let input = document.createElement('input');
+                    input.type = 'file';
+                    input.accept = 'image/*';
+                    input.onchange = e => {
+                        let file = e.target.files[0];
+                        if (!file) {
+                            medicines[i] = {name, company, phone, type, image: ""};
+                            renderMedicines(); updateDashboard();
+                            return;
+                        }
+                        let reader = new FileReader();
+                        reader.onload = function(evt) {
+                            medicines[i] = {name, company, phone, type, image: evt.target.result};
+                            renderMedicines(); updateDashboard();
+                        };
+                        reader.readAsDataURL(file);
+                    };
+                    input.click();
+                    return; // Wait for file input
+                }
+            }
+            medicines[i] = {name, company, phone, type, image};
             renderMedicines(); updateDashboard();
         }
-        function deleteMedicine(i) {
+        function deleteMedicine(i, onlyPhoto = false) {
+            if (onlyPhoto) {
+                if (confirm("Delete this medicine's photo?")) {
+                    medicines[i].image = "";
+                    renderMedicines();
+                }
+                return;
+            }
             if (confirm("Delete this medicine?")) {
                 medicines.splice(i, 1);
                 renderMedicines(); updateDashboard();
@@ -492,12 +804,67 @@
             // location.href = '/login.html';
         }
 
+        function uploadDoctorImage(i) {
+            let input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = e => {
+                let file = e.target.files[0];
+                if (!file) return;
+                let reader = new FileReader();
+                reader.onload = function(evt) {
+                    doctors[i].image = evt.target.result;
+                    renderDoctors();
+                    updateDashboard();
+                };
+                reader.readAsDataURL(file);
+            };
+            input.click();
+        }
+
+        function uploadExperimentImage(i) {
+            let input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = e => {
+                let file = e.target.files[0];
+                if (!file) return;
+                let reader = new FileReader();
+                reader.onload = function(evt) {
+                    experiments[i].image = evt.target.result;
+                    renderExperiments();
+                    updateDashboard();
+                };
+                reader.readAsDataURL(file);
+            };
+            input.click();
+        }
+
+        function uploadMedicineImage(i) {
+            let input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = e => {
+                let file = e.target.files[0];
+                if (!file) return;
+                let reader = new FileReader();
+                reader.onload = function(evt) {
+                    medicines[i].image = evt.target.result;
+                    renderMedicines();
+                    updateDashboard();
+                };
+                reader.readAsDataURL(file);
+            };
+            input.click();
+        }
+
         // Initial render
         updateDashboard();
         renderDoctors();
         renderExperiments();
         renderAppointments();
         renderMedicines();
+        renderAmbulances();
     </script>
 </body>
 </html>
