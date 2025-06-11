@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login | CUET Medical Center</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+    <div class="login-header">
+        <img src="cuet_logo.png" alt="Logo" style="height:69px;vertical-align:middle;margin-right:4px;">
+        CUET Medical Center
+    </div>
+    <div class="login-container">
+        <h2>Login</h2>
+        <div class="login-error" id="login-error">Invalid username or password.</div>
+        <form id="login-form" autocomplete="off">
+            <label for="username">Username</label>
+            <input type="text" id="username" required autofocus>
+            <label for="password">Password</label>
+            <input type="password" id="password" required>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+    <script src="login.js"></script>
+</body>
+</html>
