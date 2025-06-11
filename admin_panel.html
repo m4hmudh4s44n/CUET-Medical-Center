@@ -243,6 +243,7 @@
             <table border="0" cellpadding="8" cellspacing="0" style="width:100%;background:#fff;border-radius:8px;box-shadow:0 1px 8px #00bfff11;">
                 <thead style="background:#e6f7ff;">
                     <tr>
+                        <th>Token</th>
                         <th>Patient</th>
                         <th>Doctor</th>
                         <th>Date</th>
@@ -310,8 +311,8 @@
             {name: "Dr. Akbar Shah", specialty: "Dermatologist", phone: "234-567-8901", image: "d2.jpg"},
         ];
         let appointments = [
-            {patient: "Ali Raza", doctor: "Dr. Ayesha Khan", date: "2024-06-10", time: "10:00 AM"},
-            {patient: "Sara Ahmed", doctor: "Dr. John Smith", date: "2024-06-11", time: "11:30 AM"},
+            {patient: "Ali Raza", doctor: "Dr. Ayesha Khan", date: "2024-06-10", time: "10:00 AM", token: 1},
+            {patient: "Sara Ahmed", doctor: "Dr. John Smith", date: "2024-06-11", time: "11:30 AM", token: 2},
         ];
         let medicines = [
             {name: "Paracetamol", company: "Pharma Co.", phone: "567-890-1234", type: "Painkiller", image:"m1.jpg"},
@@ -397,6 +398,7 @@
             let html = '';
             appointments.forEach((a, i) => {
                 html += `<tr>
+                    <td>${a.token}</td>
                     <td>${a.patient}</td>
                     <td>${a.doctor}</td>
                     <td>${a.date}</td>
@@ -513,7 +515,7 @@
                         reader.readAsDataURL(file);
                     };
                     input.click();
-                    return; // Wait for file input
+                    return;
                 }
             } else {
                 if (confirm("Add a photo for this doctor?")) {
@@ -535,7 +537,7 @@
                         reader.readAsDataURL(file);
                     };
                     input.click();
-                    return; // Wait for file input
+                    return;
                 }
             }
             doctors[i] = {name, specialty, phone, image};
@@ -623,7 +625,7 @@
                         reader.readAsDataURL(file);
                     };
                     input.click();
-                    return; // Wait for file input
+                    return;
                 }
             } else {
                 if (confirm("Add a photo for this experiment?")) {
@@ -645,7 +647,7 @@
                         reader.readAsDataURL(file);
                     };
                     input.click();
-                    return; // Wait for file input
+                    return;
                 }
             }
             experiments[i] = {id, name, lead, status};
@@ -666,7 +668,8 @@
             if (!date) return;
             let time = prompt("Time (e.g. 10:00 AM):");
             if (!time) return;
-            appointments.push({patient, doctor, date, time});
+            let token = appointments.length > 0 ? appointments[appointments.length - 1].token + 1 : 1;
+            appointments.push({patient, doctor, date, time, token});
             renderAppointments(); updateDashboard();
         }
         function editAppointment(i) {
@@ -679,7 +682,7 @@
             if (!date) return;
             let time = prompt("Time (e.g. 10:00 AM):", a.time);
             if (!time) return;
-            appointments[i] = {patient, doctor, date, time};
+            appointments[i] = {patient, doctor, date, time, token: a.token};
             renderAppointments(); updateDashboard();
         }
         function deleteAppointment(i) {
