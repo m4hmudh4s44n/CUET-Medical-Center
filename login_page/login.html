@@ -8,19 +8,24 @@
 </head>
 <body>
     <div class="login-header">
-        <img src="cuet_logo.png" alt="Logo" style="height:69px;vertical-align:middle;margin-right:4px;">
+        <img src="cuet_logo.png" alt="Logo" style="height: 50px; width: 50px; vertical-align: middle; margin-right: 16px;">
         CUET Medical Center
     </div>
-    <div class="login-container">
-        <h2>Login</h2>
-        <div class="login-error" id="login-error">Invalid username or password.</div>
-        <form id="login-form" autocomplete="off">
-            <label for="username">Username</label>
-            <input type="text" id="username" required autofocus>
-            <label for="password">Password</label>
-            <input type="password" id="password" required>
-            <button type="submit">Login</button>
-        </form>
+    <div class="login-flex">
+        <div class="login-image">
+            <h1>Log In</h1>
+            <h3>Welcome back to your account</h3>
+            <img src="login_male.jpg" alt="CUET Log In Image" style="height: 200px; width: 200px; border-radius: 50%;">
+        </div>
+        <div class="login-container">
+            <!-- <h2>Login</h2> -->
+            <div class="login-error" id="login-error">Invalid username or password.</div>
+            <form id="login-form" autocomplete="off">
+                <input type="text" id="username" placeholder="Email" required autofocus>
+                <input type="password" id="password" placeholder="Password" required>
+                <button type="submit">Log in</button>
+            </form>
+        </div>
     </div>
     <script src="login.js"></script>
 </body>
