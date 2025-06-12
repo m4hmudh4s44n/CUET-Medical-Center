@@ -18,11 +18,14 @@
             <img src="login_male.jpg" alt="CUET Log In Image" style="height: 200px; width: 200px; border-radius: 50%;">
         </div>
         <div class="login-container">
-            <!-- <h2>Login</h2> -->
             <div class="login-error" id="login-error">Invalid username or password.</div>
             <form id="login-form" autocomplete="off">
-                <input type="text" id="username" placeholder="Email" required autofocus>
-                <input type="password" id="password" placeholder="Password" required>
+                <div class="input-icon">
+                    <input type="text" id="username" placeholder="📧 Email" required autofocus>
+                </div>
+                <div class="input-icon">
+                    <input type="password" id="password" placeholder="🔒 Password" required>
+                </div>
                 <button type="submit">Log in</button>
             </form>
         </div>
