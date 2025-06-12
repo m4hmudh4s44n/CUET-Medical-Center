@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Check-ups & Medicines | CUET Medical Center</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <style>
+        .medicine-list-section {
+            margin: 4rem auto;
+            width: 90%;
+            max-width: 900px;
+        }
+        .medicine-list-section h2 {
+            text-align: center;
+            color: #0188df;
+            margin-bottom: 2rem;
+        }
+        .medicine-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: center;
+        }
+        .medicine-box {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px #0001;
+            padding: 2rem;
+            min-width: 220px;
+            text-align: center;
+        }
+        .medicine-box h3 {
+            color: #0188df;
+            font-size: 2rem;
+        }
+        .medicine-box p {
+            font-size: 1.5rem;
+            color: #444;
+        }
+        /* .admin-panel-link {
+            text-align: center;
+            margin-top: 2rem;
+        } */
+    </style>
+</head>
+<body>
+    <header>
+        <a href="index.html" class="logo"><span>C</span>UET <span>M</span>edical <span>C</span>enter</a>
+        <nav class="navbar">
+            <ul>
+                <li><a href="index.html#home">Home</a></li>
+                <li><a href="index.html#about">About</a></li>
+                <li><a href="index.html#doctor">Doctor</a></li>
+                <li><a href="index.html#review">Review</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+                <li><a href="index.html#blog">Blog</a></li>
+                <li><a href="#login">Login</a></li>
+                <li><a href="#signup">Signup</a></li>
+            </ul>
+        </nav>
+        <div class="fas fa-bars"></div>
+    </header>
+
+    <section class="about" style="padding-top: 10rem;">
+        <h1 class="heading">Free Check-ups & Medicines</h1>
+        <h3 class="title">Ensuring Health for All</h3>
+        <div class="box-container">
+            <div class="box">
+                <div class="images">
+                    <img src="./images/about-3.png" alt="Free Medicines">
+                </div>
+                <div class="content" style="font-size:1.8rem; line-height:2.8rem;">
+                    <p style="margin-bottom:2rem;">
+                        We provide free health check-ups and essential medicines to all members of our community. Our goal is to ensure everyone has access to basic healthcare and the support they need to stay healthy.
+                    </p>
+                    <ul style="font-size:1.8rem; margin:1.5rem 0 0 2rem; line-height:2.8rem;">
+                        <li>Regular free health check-up camps</li>
+                        <li>Distribution of essential medicines</li>
+                        <li>Consultation with experienced doctors</li>
+                        <li>Health awareness programs</li>
+                        <li>Support for chronic disease management</li>
+                    </ul>
+                    <a href="index.html#contact" style="display:inline-block; margin-top:2.5rem;">
+                        <button class="button" style="min-width:22rem; font-size:1.6rem; white-space:nowrap;">
+                            Contact For Free Check-Up
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!-- Medicine List Section -->
+        <div class="medicine-list-section">
+            <h1 class="heading">Available Medicines</h1>
+            <div class="medicine-list" id="medicine-list">
+                <!-- JS will fill this -->
+            </div>
+            <!-- <div class="admin-panel-link">
+                <a href="admin_panel.html"><button class="button" style="min-width:18rem;">Admin Panel</button></a>
+            </div> -->
+        </div>
+    </section>
+
+    <section class="footer">
+        <div class="box">
+            <h2 class="logo"><span>C</span>UET <span>M</span>edical <span>C</span>enter</h2>
+            <p>We are committed to providing quality healthcare services and ensuring the well-being of our patients and community.</p>
+        </div>
+        <div class="box">
+            <h2 class="logo"><span>S</span>hare</h2>
+            <a href="#">Facebook</a>
+            <a href="#">Twitter</a>
+            <a href="#">Instagram</a>
+            <a href="#">Pinterest</a>
+        </div>
+        <div class="box">
+            <h2 class="logo"><span>L</span>inks</h2>
+            <a href="index.html#home">Home</a>
+            <a href="index.html#about">About</a>
+            <a href="index.html#doctor">Doctor</a>
+            <a href="index.html#review">Review</a>
+            <a href="index.html#contact">Contact</a>
+            <a href="index.html#blog">Blog</a>
+            <a href="index.html#admin">Login</a>
+            <a href="index.html#signup">Signup</a>
+        </div>
+        <h1 class="credit">Created by <span>Website Masters</span>. All rights reserved.</h1>
+    </section>
+    <script>
+        // Example static data, in real use fetch from backend or localStorage
+        const medicines = [
+            { name: "Paracetamol", quantity: 120 },
+            { name: "Amoxicillin", quantity: 80 },
+            { name: "Ibuprofen", quantity: 60 },
+            { name: "Cetirizine", quantity: 45 }
+        ];
+        function renderMedicineList() {
+            const container = document.getElementById('medicine-list');
+            container.innerHTML = medicines.map(m =>
+                `<div class="medicine-box">
+                    <h3>${m.name}</h3>
+                    <p>Quantity: <span>${m.quantity}</span></p>
+                </div>`
+            ).join('');
+        }
+        renderMedicineList();
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="./js/main.js"></script>
+</body>
+</html>
