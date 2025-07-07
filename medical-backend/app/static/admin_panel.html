@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Medical Center Admin Panel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --primary: #00bfff;
+            --secondary: #f5faff;
+            --accent: #111;
+            --white: #fff;
+            --gradient: linear-gradient(90deg, #00bfff 60%, #1a355b 100%);
+        }
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: var(--secondary);
+            color: var(--accent);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .sidebar {
+            position: fixed;
+            left: 0; top: 0; bottom: 0;
+            width: 220px;
+            background: var(--primary);
+            color: var(--white);
+            display: flex;
+            flex-direction: column;
+            padding: 30px 0;
+            box-shadow: 2px 0 8px #0001;
+            z-index: 10;
+            transition: width 0.3s;
+        }
+        .sidebar.collapsed {
+            width: 60px !important;
+            overflow: hidden;
+        }
+        .sidebar.collapsed h2 {
+            display: none;
+        }
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 40px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            font-size: 1.5em;
+            animation: fadeInLeft 1s;
+        }
+        .sidebar nav a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 32px;
+            color: var(--white);
+            text-decoration: none;
+            font-size: 1.08em;
+            border-left: 4px solid transparent;
+            transition: background 0.2s, border-color 0.2s, color 0.2s, padding 0.2s;
+            position: relative;
+        }
+        .sidebar nav a.active, .sidebar nav a:hover {
+            background: #e6f7ff;
+            color: var(--primary);
+            border-left: 4px solid var(--accent);
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        .sidebar nav a i {
+            min-width: 22px;
+            text-align: center;
+            font-size: 1.2em;
+        }
+        .sidebar.collapsed nav {
+            display: none;
+        }
+        .toggle-sidebar {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--accent);
+            color: var(--white);
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1.2em;
+            z-index: 20;
+            transition: background 0.2s, color 0.2s;
+        }
+        .toggle-sidebar:hover {
+            background: var(--white);
+            color: var(--primary);
+        }
+        .main {
+            margin-left: 220px;
+            padding: 40px 32px;
+            min-height: 100vh;
+            background: var(--secondary);
+            transition: margin-left 0.3s, background 0.3s;
+        }
+        .main.collapsed {
+            margin-left: 60px !important;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            animation: fadeInDown 1s;
+        }
+        .header h1 {
+            font-size: 2em;
+            font-weight: 600;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .logout-btn {
+            background: var(--accent);
+            color: var(--white);
+            border: none;
+            padding: 10px 22px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 8px #00bfff22;
+        }
+        .logout-btn:hover {
+            background: var(--primary);
+            color: var(--accent);
+            box-shadow: 0 4px 16px #00bfff33;
+        }
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+            margin-bottom: 2.5rem;
+        }
+        .card {
+            background: var(--white);
+            border-radius: 14px;
+            box-shadow: 0 2px 12px #00bfff11;
+            padding: 28px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            transition: box-shadow 0.2s, transform 0.2s;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 1s;
+        }
+        .card:hover {
+            box-shadow: 0 8px 32px #00bfff22, 0 1.5px 8px #0001;
+            transform: translateY(-6px) scale(1.05);
+            z-index: 2;
+        }
+        .card h3 {
+            margin: 0 0 12px;
+            font-size: 1.2em;
+            color: var(--primary);
+            letter-spacing: 1px;
+        }
+        .card p {
+            margin: 0 0 18px;
+            color: #333;
+            font-size: 2.2em;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+        .card button {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 8px 18px;
+            border-radius: 16px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.2s, color 0.2s, transform 0.2s;
+        }
+        .card button:hover {
+            background: var(--accent);
+            color: var(--white);
+            transform: scale(1.05);
+        }
+        /* Table styling */
+        table {
+            width: 100%;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 1px 8px #00bfff11;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-bottom: 2rem;
+            animation: fadeInUp 1s;
+        }
+        thead {
+            background: #e6f7ff;
+        }
+        th, td {
+            padding: 12px 10px;
+            text-align: left;
+            font-size: 1.08em;
+        }
+        th {
+            color: #0188df;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        tr {
+            transition: background 0.2s;
+        }
+        tr:hover {
+            background: #f0faff;
+        }
+        td button {
+            margin: 0 2px;
+            font-size: 0.95em;
+        }
+        td img {
+            vertical-align: middle;
+            margin-right: 8px;
+            border-radius: 50%;
+            border: 2px solid #00bfff33;
+        }
+        /* Section transitions */
+        .section {
+            animation: fadeIn 0.7s;
+        }
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-40px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+        @keyframes fadeInLeft {
+            from { opacity: 0; transform: translateX(-40px);}
+            to { opacity: 1; transform: translateX(0);}
+        }
+        @keyframes fadeIn {
+            from { opacity: 0;}
+            to { opacity: 1;}
+        }
+        /* Floating icon animation */
+        .floating-admin-icon {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            z-index: 100;
+            opacity: 0.13;
+            animation: floatY 3s ease-in-out infinite alternate;
+            pointer-events: none;
+        }
+        @keyframes floatY {
+            0% { transform: translateY(0);}
+            100% { transform: translateY(-20px);}
+        }
+        /* Responsive */
+        @media (max-width: 900px) {
+            .sidebar { width: 60px; padding: 10px 0; }
+            .sidebar.expanded { width: 220px; }
+            .sidebar h2 { font-size: 1em; margin-bottom: 20px; }
+            .sidebar nav a { padding: 10px 10px; font-size: 0.95em; }
+            .main { margin-left: 60px; padding: 20px 8px; }
+            .header h1 { font-size: 1.2em; }
+        }
+        @media (max-width: 600px) {
+            .main { padding: 10px 2px; }
+            .header { flex-direction: column; gap: 1rem; }
+            .card-grid { grid-template-columns: 1fr; }
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            background: #e6f7ff;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #00bfff33;
+            border-radius: 8px;
+        }
+        .floating-medical-icon {
+            position: fixed;
+            top: 85%;
+            left: 90%;
+            width: 120px;
+            height: 125px;
+            z-index: 100;
+            opacity: 0.50;
+            animation: floatY 2.5s ease-in-out infinite alternate;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+        }
+        @keyframes floatY {
+            0% { transform: translateY(0);}
+            100% { transform: translateY(-20px);}
+        }
+        @media (max-width: 900px) {
+            .floating-medical-icon { display: none; }
+        }
+
+
+
+
+        /* General page styles */
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+/* Popup styles */
+.popup-overlay {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.3s ease;
+    opacity: 0;
+    z-index: 9999; /* Ensure it is above all content */
+}
+
+.popup-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 350px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+    transform: scale(0.8);
+}
+
+.popup-container h2 {
+    color: #0188df;
+    text-align: center;
+    font-size: 24px;
+}
+
+label {
+    color: #0188df;
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+input {
+    width: 95%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #ADD8E6; /* Light blue border */
+    border-radius: 5px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+input:focus {
+    border-color: #0188df; /* Green border when focused */
+    outline: none;
+}
+
+button[type="submit"] {
+    background-color: #0188df;
+    color: white;
+    font-size: 16px;
+    border-radius: 5px;
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+button[type="submit"]:hover {
+    color: #0188df;
+    background-color: white;
+    border: 1px solid #0188df;
+}
+
+button#closeBtn {
+    background-color: #000000;
+    color: white;
+    font-size: 16px;
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+}
+
+button#closeBtn:hover {
+    background-color: #ffffff;
+    color: #000000;
+    border: 1px solid #000000;
+}
+
+
+
+
+
+    </style>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+</head>
+<body>
+    <!-- Floating admin icon (optional) -->
+    <img src="./images/cuet_logo.png" alt="CUET Logo" class="floating-medical-icon">
+
+    <div class="sidebar" id="sidebar">
+        <button id="toggle-sidebar" class="toggle-sidebar"><i class="fa fa-bars"></i></button>
+        <h2>Admin Panel</h2>
+        <nav>
+            <a href="#" class="active" data-section="dashboard" onclick="toggleSectionVisibility('dashboard')"><i class="fa fa-chart-line"></i> Dashboard</a>
+            <a href="#" data-section="doctors" onclick="toggleSectionVisibility('doctors')"><i class="fa fa-user-md"></i> Doctors</a>
+            <a href="#" data-section="experiments" onclick="toggleSectionVisibility('experiments')"><i class="fa fa-flask"></i> Experiments</a>
+            <a href="#" data-section="appointments" onclick="toggleSectionVisibility('appointments')"><i class="fa fa-calendar-check"></i> Appointments</a>
+            <a href="#" data-section="medicines" onclick="toggleSectionVisibility('medicines')"><i class="fa fa-pills"></i> Medicines</a>
+            <a href="#" data-section="ambulances" onclick="toggleSectionVisibility('ambulances')"><i class="fa fa-ambulance"></i> Ambulance</a>
+            <a href="#" data-section="settings" onclick="toggleSectionVisibility('settings')"><i class="fa fa-cog"></i> Settings</a>
+        </nav>
+    </div>
+    <div class="main">
+        <div class="header">
+            <h1 id="section-title">Dashboard</h1>
+            <button class="logout-btn" onclick="logout()"><i class="fa fa-sign-out-alt"></i> Logout</button>
+        </div>
+        <div id="dashboard" class="section">
+            <div class="card-grid">
+                <div class="card" style="border-left:6px solid #0188df;">
+                    <h3><i class="fa fa-user-md"></i> Total Doctors</h3>
+                    <p id="doctor-count">12</p>
+                    <button onclick="showSection('doctors')"><i class="fa fa-eye"></i> View Doctors</button>
+                </div>
+                <div class="card" style="border-left:6px solid #1a355b;">
+                    <h3><i class="fa fa-flask"></i> Total Experiments</h3>
+                    <p id="experiment-count">56</p>
+                    <button onclick="showSection('experiments')"><i class="fa fa-eye"></i> View Experiments</button>
+                </div>
+                <div class="card" style="border-left:6px solid #00bfff;">
+                    <h3><i class="fa fa-calendar-check"></i> Upcoming Appointments</h3>
+                    <p id="appointment-count">8</p>
+                    <button onclick="showSection('appointments')"><i class="fa fa-eye"></i> View Appointments</button>
+                </div>
+                <div class="card" style="border-left:6px solid #1a355b;">
+                    <h3><i class="fa fa-pills"></i> Total Medicines</h3>
+                    <p id="medicine-count">2000</p>
+                    <button onclick="showSection('medicines')"><i class="fa fa-eye"></i> View Medicines</button>
+                </div>
+            </div>
+        </div>
+        <div id="doctors" class="section" style="display:none">
+            <h2><i class="fa fa-user-md"></i> Doctors</h2>
+            <button onclick="addDoctor()" style="margin-bottom:12px;background:var(--primary);color:#fff;"><i class="fa fa-plus"></i> Add Doctor</button>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Specialty</th>
+                        <th>Phone</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="doctor-table">
+                    <!-- JS will fill -->
+                </tbody>
+            </table>
+        </div>
+        <div id="experiments" class="section" style="display:none">
+            <h2><i class="fa fa-flask"></i> Experiments</h2>
+            <button onclick="addExperiment()" style="margin-bottom:12px;background:var(--primary);color:#fff;"><i class="fa fa-plus"></i> Add Experiment</button>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Lead</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="experiment-table">
+                    <!-- JS will fill -->
+                </tbody>
+            </table>
+        </div>
+        <div id="appointments" class="section" style="display:none">
+            <h2><i class="fa fa-calendar-check"></i> Appointments</h2>
+            <button onclick="addAppointment()" style="margin-bottom:12px;background:var(--primary);color:#fff;"><i class="fa fa-plus"></i> Add Appointment</button>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Patient</th>
+                        <th>Doctor</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="appointment-table">
+                    <!-- JS will fill -->
+                </tbody>
+            </table>
+        </div>
+        <div id="medicines" class="section" style="display:none">
+            <h2><i class="fa fa-pills"></i> Medicines</h2>
+            <button onclick="addMedicine()" style="margin-bottom:12px;background:var(--primary);color:#fff;"><i class="fa fa-plus"></i> Add Medicine</button>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Company</th>
+                        <th>Type</th>
+                        <th>Quantity</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="medicine-table">
+                    <!-- JS will fill -->
+                </tbody>
+            </table>
+        </div>
+        <div id="ambulances" class="section" style="display:none">
+            <h2><i class="fa fa-ambulance"></i> Ambulance</h2>
+            <button onclick="addAmbulance()" style="margin-bottom:12px;background:var(--primary);color:#fff;"><i class="fa fa-plus"></i> Add Ambulance</button>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Number</th>
+                        <th>Driver</th>
+                        <th>Phone</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="ambulance-table">
+                    <!-- JS will fill -->
+                </tbody>
+            </table>
+        </div>
+        <div id="settings" class="section" style="display:none">
+            <h2><i class="fa fa-cog"></i> Settings</h2>
+            <p>Change password, update profile, etc.</p>
+            <button onclick="alert('Settings saved!')" style="background:var(--primary);color:#fff;"><i class="fa fa-save"></i> Save Settings</button>
+        </div>
+    </div>
+    <script>
+        document.getElementById('toggle-sidebar').addEventListener('click', () => {
+            const sidebar = document.getElementById('sidebar');
+            const main = document.querySelector('.main');
+            sidebar.classList.toggle('collapsed');
+            main.classList.toggle('collapsed');
+        });
+
+        let doctors = [];
+
+        let appointments = [
+            {patient: "Ali Raza", doctor: "Dr. Ayesha Khan", date: "2024-06-10", time: "10:00 AM"},
+            {patient: "Sara Ahmed", doctor: "Dr. John Smith", date: "2024-06-11", time: "11:30 AM"},
+        ];
+        let experiments = [];
+        
+        
+        function toggleSectionVisibility(section) {
+            document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+            document.getElementById(section).style.display = '';
+            document.querySelectorAll('.sidebar nav a').forEach(a => a.classList.remove('active'));
+            let navLinks = document.querySelectorAll('.sidebar nav a');
+            navLinks.forEach(a => {
+                if (a.getAttribute('data-section') === section) a.classList.add('active');
+                if (section === 'dashboard' && a.textContent.trim().toLowerCase().includes('dashboard')) a.classList.add('active');
+            });
+            document.getElementById('section-title').textContent = section.charAt(0).toUpperCase() + section.slice(1);
+            if (section === 'doctors') fetchDoctors();
+            if (section === 'experiments') fetchExperiments();
+            if (section === 'appointments') renderAppointments();
+            if (section === 'medicines') fetchMedicines();
+            if (section === 'ambulances') fetchAmbulances();
+            if (section === 'dashboard') updateDashboard();
+        }
+        function showSection(section) {
+            toggleSectionVisibility(section);
+        }
+        function updateDashboard() {
+            document.getElementById('doctor-count').textContent = doctors.length;
+            document.getElementById('experiment-count').textContent = experiments.length;
+            document.getElementById('appointment-count').textContent = appointments.length;
+            document.getElementById('medicine-count').textContent = medicines.length;
+        }
+        function renderDoctors() {
+            let html = '';
+            doctors.forEach((d, i) => {
+                html += `<tr>
+                    <td>
+                        ${d.image ? `<img src="${d.image}" alt="Doctor" style="width:40px;height:40px;border-radius:50%;">` : ''}
+                        <button onclick="uploadDoctorImage(${i})">${d.image ? 'Change' : 'Add'} Photo</button>
+                        ${d.image ? `<button onclick="deleteDoctor(${i}, true)" style="background:#f00;color:#fff;">Delete Photo</button>` : ''}
+                    </td>
+                    <td>${d.name}</td>
+                    <td>${d.specialty}</td>
+                    <td>${d.phone}</td>
+                    <td>
+                        <button onclick="editDoctor(${i})"><i class="fa fa-edit"></i> Edit</button>
+                        <button onclick="deleteDoctor(${i})" style="background:#111;color:#fff;"><i class="fa fa-trash"></i> Delete</button>
+                    </td>
+                </tr>`;
+            });
+            document.getElementById('doctor-table').innerHTML = html;
+        }
+        function renderExperiments() {
+            let html = '';
+            experiments.forEach((e, i) => {
+                html += `<tr>
+                    <td>
+                        ${e.image ? `<img src="${e.image}" alt="Experiment" style="width:40px;height:40px;border-radius:50%;">` : ''}
+                        <button onclick="uploadExperimentImage(${i})">${e.image ? 'Change' : 'Add'} Photo</button>
+                        ${e.image ? `<button onclick="deleteExperiment(${i}, true)" style="background:#f00;color:#fff;">Delete Photo</button>` : ''}
+                    </td>
+                    <td>${e.ex_id}</td>
+                    <td>${e.name}</td>
+                    <td>${e.lead}</td>
+                    <td>${e.status}</td>
+                    <td>
+                        <button onclick="editExperiment(${i})"><i class="fa fa-edit"></i> Edit</button>
+                        <button onclick="deleteExperiment(${i})" style="background:#111;color:#fff;"><i class="fa fa-trash"></i> Delete</button>
+                    </td>
+                </tr>`;
+            });
+            document.getElementById('experiment-table').innerHTML = html;
+        }
+        function renderAppointments() {
+            let html = '';
+            appointments.forEach((a, i) => {
+                html += `<tr>
+                    <td>${a.patient}</td>
+                    <td>${a.doctor}</td>
+                    <td>${a.date}</td>
+                    <td>${a.time}</td>
+                    <td>
+                        <button onclick="editAppointment(${i})"><i class="fa fa-edit"></i> Edit</button>
+                        <button onclick="deleteAppointment(${i})" style="background:#111;color:#fff;"><i class="fa fa-trash"></i> Delete</button>
+                    </td>
+                </tr>`;
+            });
+            document.getElementById('appointment-table').innerHTML = html;
+        }
+        // Dummy ambulance edit/delete/add
+        
+        async function fetchDoctors(){
+            const response = await fetch('http://127.0.1:8000/doctors');
+            doctors = await response.json();
+            renderDoctors();
+        }
+
+        function addDoctor() {
+            const popupContainer = `
+                <div class="popup-overlay">
+                    <div class="popup-container">
+                        <h2>Add Doctor</h2>
+                        <form class="doctorForm" id="doctorForm" method="POST" action="http://127.0.0.1:8000/doctors/">
+                        
+                            <label for="doctorname">Doctor Name:</label>
+                            <input type="text" id="doctorName" name="name" required>
+
+                            <label for="specialty">specialty:</label>
+                            <input type="text" id="specialty" name="specialty" required>
+
+                            <label for="phoneNumber">Phone Number:</label>
+                            <input type="text" id="phoneNumber" name="phone" required>
+
+                            <button type="submit">Submit</button>
+                            <button type="button" id="closeBtn">Cancel</button>
+                        </form>
+                    </div>
+                </div>
+            `;
+
+            // Append the popup container to the body
+            document.body.insertAdjacentHTML('beforeend', popupContainer);
+
+            // Close the popup when "Cancel" is clicked
+            document.getElementById('closeBtn').addEventListener('click', () => {
+                closePopup();
+            });
+
+
+            // Close the popup with a transition
+            function closePopup() {
+                const popupOverlay = document.querySelector('.popup-overlay');
+                popupOverlay.style.opacity = '0';
+                document.querySelector('.popup-container').style.transform = 'scale(0.8)';
+                setTimeout(() => {
+                    popupOverlay.remove();
+                }, 300);
+            }
+
+            // Transition effect
+            setTimeout(() => {
+                document.querySelector('.popup-overlay').style.opacity = '1';
+                document.querySelector('.popup-container').style.transform = 'scale(1)';
+            }, 10);
+            renderDoctors(); updateDashboard();
+        }
+        function editDoctor(i) {
+            let d = doctors[i];
+            let name = prompt("Doctor's Name:", d.name);
+            if (!name) return;
+            let specialty = prompt("specialty:", d.specialty);
+            if (!specialty) return;
+            let phone = prompt("Phone:", d.phone);
+            if (!phone) return;
+            doctors[i] = {name, specialty, phone, image: d.image};
+            renderDoctors(); updateDashboard();
+        }
+        async function deleteDoctor(i) {
+            if (confirm("Delete Doctor?")) {
+                await fetch(`http://127.0.0.1:8000/doctors/${doctors[i].id}`, {
+                    method: 'DELETE'
+                });
+                fetchDoctors();
+            }
+        }
+        async function fetchExperiments(){
+            const response = await fetch('http://127.0.0.1:8000/experiments');
+            experiments = await response.json();
+            renderExperiments();
+        }
+        function addExperiment() {
+            const popupContainer = `
+                <div class="popup-overlay">
+                    <div class="popup-container">
+                        <h2>Add Experiment</h2>
+                        <form class="experimentForm" id="experimentForm" method="POST" action="http://127.0.0.1:8000/experiments/">
+                        
+                            <label for="ex_id">ID:</label>
+                            <input type="text" id="ex_id" name="ex_id" required>
+
+                            <label for="Name">Experiment Name:</label>
+                            <input type="text" id="Name" name="name" required>
+
+                            <label for="Lead">Lead:</label>
+                            <input type="text" id="Lead" name="lead" required>
+
+                            <label for="status">Status:</label>
+                            <input type="text" id="status" name="status" required>
+
+                            <button type="submit">Submit</button>
+                            <button type="button" id="closeBtn">Cancel</button>
+                        </form>
+                    </div>
+                </div>
+            `;
+
+            // Append the popup container to the body
+            document.body.insertAdjacentHTML('beforeend', popupContainer);
+
+            // Close the popup when "Cancel" is clicked
+            document.getElementById('closeBtn').addEventListener('click', () => {
+                closePopup();
+            });
+
+
+            // Close the popup with a transition
+            function closePopup() {
+                const popupOverlay = document.querySelector('.popup-overlay');
+                popupOverlay.style.opacity = '0';
+                document.querySelector('.popup-container').style.transform = 'scale(0.8)';
+                setTimeout(() => {
+                    popupOverlay.remove();
+                }, 300);
+            }
+
+            // Transition effect
+            setTimeout(() => {
+                document.querySelector('.popup-overlay').style.opacity = '1';
+                document.querySelector('.popup-container').style.transform = 'scale(1)';
+            }, 10);
+            renderExperiments(); updateDashboard();
+        }
+        function editExperiment(i) {
+            let e = experiments[i];
+            let id = prompt("Experiment ID:", e.id);
+            if (!id) return;
+            let name = prompt("Experiment name:", e.name);
+            if (!name) return;
+            let lead = prompt("Lead:", e.lead);
+            if (!lead) return;
+            let status = prompt("Status (e.g. ongoing, completed):", e.status);
+            if (!status) return;
+            experiments[i] = {id, name, lead, status, image: e.image};
+            renderExperiments(); updateDashboard();
+        }
+        async function deleteExperiment(i) {
+            if (confirm("Delete Experiment?")) {
+                await fetch(`http://127.0.0.1:8000/experiments/${experiments[i].id}`, {
+                    method: 'DELETE'
+                });
+                fetchExperiments();
+            }
+        }
+        function addAppointment() {
+            let patient = prompt("Patient Name:");
+            if (!patient) return;
+            let doctor = prompt("Doctor Name:");
+            if (!doctor) return;
+            let date = prompt("Date (YYYY-MM-DD):");
+            if (!date) return;
+            let time = prompt("Time (e.g. 10:00 AM):");
+            if (!time) return;
+            appointments.push({patient, doctor, date, time});
+            renderAppointments(); updateDashboard();
+        }
+        function editAppointment(i) {
+            let a = appointments[i];
+            let patient = prompt("Patient Name:", a.patient);
+            if (!patient) return;
+            let doctor = prompt("Doctor Name:", a.doctor);
+            if (!doctor) return;
+            let date = prompt("Date (YYYY-MM-DD):", a.date);
+            if (!date) return;
+            let time = prompt("Time (e.g. 10:00 AM):", a.time);
+            if (!time) return;
+            appointments[i] = {patient, doctor, date, time};
+            renderAppointments(); updateDashboard();
+        }
+        function deleteAppointment(i) {
+            if (confirm("Delete this appointment?")) {
+                appointments.splice(i, 1);
+                renderAppointments(); updateDashboard();
+            }
+        }
+
+        let medicines = [];
+
+        async function fetchMedicines() {
+            const res = await fetch('http://127.0.0.1:8000/medicines');
+            medicines = await res.json();
+            renderMedicines();
+        }
+
+
+        function renderMedicines() {
+            let html = '';
+            medicines.forEach((m, i) => {
+                html += `<tr>
+                    <td>
+                        ${m.image ? `<img src="${m.image}" alt="Medicine" style="width:40px;height:40px;border-radius:50%;">` : ''}
+                        <button onclick="uploadMedicineImage(${i})">${m.image ? 'Change' : 'Add'} Photo</button>
+                        ${m.image ? `<button onclick="deleteMedicine(${i}, true)" style="background:#f00;color:#fff;">Delete Photo</button>` : ''}
+                    </td>
+                    <td>${m.name}</td>
+                    <td>${m.company}</td>
+                    <td>${m.type}</td>
+                    <td>
+                        <button onclick="changeQuantity(${i}, 1)">+</button>
+                        <span id="qty-${i}">${m.quantity || 0}</span>
+                        <button onclick="changeQuantity(${i}, -1)">−</button>
+                    </td>
+                    <td>
+                        <button onclick="editMedicine(${i})"><i class="fa fa-edit"></i> Edit</button>
+                        <button onclick="deleteMedicine(${i})" style="background:#111;color:#fff;"><i class="fa fa-trash"></i> Delete</button>
+                    </td>
+                </tr>`;
+            });
+            document.getElementById('medicine-table').innerHTML = html;
+        }
+
+        function changeQuantity(index, delta) {
+            medicines[index].quantity = Math.max(0, (medicines[index].quantity || 0) + delta);
+            document.getElementById('qty-' + index).textContent = medicines[index].quantity;
+        }
+
+        function addMedicine() {
+            const popupContainer = `
+                <div class="popup-overlay">
+                    <div class="popup-container">
+                        <h2>Add Medicine</h2>
+                        <form class="medicineForm" id="medicineForm" method="POST" action="http://127.0.0.1:8000/medicines/">
+                            <label for="medicineName">Medicine Name:</label>
+                            <input type="text" id="medicineName" name="name" required>
+
+                            <label for="company">Company:</label>
+                            <input type="text" id="company" name="company" required>
+
+                            <label for="type">Type:</label>
+                            <input type="text" id="type" name="type" required>
+                            
+                            <label for="quantity">Quantity:</label>
+                            <input type="number" id="quantity" name="quantity" required>
+                            
+                            <button type="submit">Submit</button>
+                            <button type="button" id="closeBtn">Cancel</button>
+                            </form>
+                            </div>
+                            </div>
+                            `;
+
+            document.body.insertAdjacentHTML('beforeend', popupContainer);
+
+            document.getElementById('closeBtn').addEventListener('click', () => {
+                closePopup();
+            });
+
+            function closePopup() {
+                const popupOverlay = document.querySelector('.popup-overlay');
+                popupOverlay.style.opacity = '0';
+                document.querySelector('.popup-container').style.transform = 'scale(0.8)';
+                setTimeout(() => {
+                    popupOverlay.remove();
+                }, 300);
+            }
+
+            setTimeout(() => {
+                document.querySelector('.popup-overlay').style.opacity = '1';
+                document.querySelector('.popup-container').style.transform = 'scale(1)';
+            }, 10);
+
+            //Handle form submission with JS
+            // document.getElementById('medicineForm').addEventListener('submit', async function(e) {
+            //     e.preventDefault();
+            //     const form = e.target;
+            //     const formData = new FormData(form);
+
+            //     await fetch('http://127.0.0.1:8000/medicines/', {
+            //         method: 'POST',
+            //         body: formData
+            //     });
+
+            //     closePopup();
+            //     fetchMedicines();
+            // });
+
+        }
+
+        function editMedicine(i) {
+            let m = medicines[i];
+            let name = prompt("Medicine Name:", m.name);
+            if (!name) return;
+            let company = prompt("Company:", m.company);
+            if (!company) return;
+            let phone = prompt("Phone:", m.phone);
+            if (!phone) return;
+            let type = prompt("Type:", m.type);
+            if (!type) return;
+            let quantity = parseInt(prompt("Quantity:", m.quantity || "0"), 10);
+            if (isNaN(quantity) || quantity < 0) quantity = 0;
+            medicines[i] = {name, company, phone, type, image: m.image, quantity};
+            renderMedicines(); updateDashboard();
+        }
+        function deleteMedicine(i, onlyPhoto = false) {
+            if (onlyPhoto) {
+                if (confirm("Delete this medicine's photo?")) {
+                    medicines[i].image = "";
+                    renderMedicines();
+                }
+                return;
+            }
+            if (confirm("Delete this medicine?")) {
+                medicines.splice(i, 1);
+                renderMedicines(); updateDashboard();
+            }
+        }
+        // Expose functions for onclick
+        
+        let ambulances = [];
+
+        async function fetchAmbulances() {
+            const res = await fetch('http://127.0.0.1:8000/ambulances');
+            ambulances = await res.json();
+            renderAmbulances();
+        }
+
+
+        function renderAmbulances() {
+            let html = '';
+            ambulances.forEach((a, i) => {
+                html += `<tr>
+                    <td>${a.number}</td>
+                    <td>${a.driver}</td>
+                    <td>${a.phone}</td>
+                    <td>${a.status}</td>
+                    <td>
+                        <button onclick="editAmbulance(${i})"><i class="fa fa-edit"></i> Edit</button>
+                        <button onclick="deleteAmbulance(${i})" style="background:#111;color:#fff;"><i class="fa fa-trash"></i> Delete</button>
+                    </td>
+                </tr>`;
+            });
+            document.getElementById('ambulance-table').innerHTML = html;
+        }
+        // Function to render the popup when "Add Ambulance" button is clicked
+        function addAmbulance() {
+            const popupContainer = `
+                <div class="popup-overlay">
+                    <div class="popup-container">
+                        <h2>Add Ambulance</h2>
+                        <form class="ambulanceForm" id="ambulanceForm" method="POST" action="http://127.0.0.1:8000/ambulances/">
+                        
+                            <label for="ambulanceNumber">Ambulance Number:</label>
+                            <input type="text" id="ambulanceNumber" name="number" required>
+
+                            <label for="driverName">Driver Name:</label>
+                            <input type="text" id="driverName" name="driver" required>
+
+                            <label for="phoneNumber">Phone Number:</label>
+                            <input type="text" id="phoneNumber" name="phone" required>
+
+                            <label for="status">Status:</label>
+                            <input type="text" id="status" name="status" required>
+
+                            <button type="submit">Submit</button>
+                            <button type="button" id="closeBtn">Cancel</button>
+                        </form>
+                    </div>
+                </div>
+            `;
+
+            // Append the popup container to the body
+            document.body.insertAdjacentHTML('beforeend', popupContainer);
+
+            // Close the popup when "Cancel" is clicked
+            document.getElementById('closeBtn').addEventListener('click', () => {
+                closePopup();
+            });
+
+
+            // Close the popup with a transition
+            function closePopup() {
+                const popupOverlay = document.querySelector('.popup-overlay');
+                popupOverlay.style.opacity = '0';
+                document.querySelector('.popup-container').style.transform = 'scale(0.8)';
+                setTimeout(() => {
+                    popupOverlay.remove();
+                }, 300);
+            }
+
+            // Transition effect
+            setTimeout(() => {
+                document.querySelector('.popup-overlay').style.opacity = '1';
+                document.querySelector('.popup-container').style.transform = 'scale(1)';
+            }, 10);
+
+        }
+
+        function editAmbulance(i) {
+            const popupContainer = `
+                <div class="popup-overlay">
+                    <div class="popup-container">
+                        <h2>Edit Ambulance</h2>
+                        <form class="ambulanceForm" id="ambulanceForm" method="POST" action="http://127.0.0.1:8000/ambulances/${ambulances[i].id}/">
+                        
+                            <label for="ambulanceNumber">Ambulance Number:</label>
+                            <input type="text" id="ambulanceNumber" name="number" required >
+
+                            <label for="driverName">Driver Name:</label>
+                            <input type="text" id="driverName" name="driver" required>
+
+                            <label for="phoneNumber">Phone Number:</label>
+                            <input type="text" id="phoneNumber" name="phone" required>
+
+                            <label for="status">Status:</label>
+                            <input type="text" id="status" name="status" required>
+
+                            <button type="submit">Submit</button>
+                            <button type="button" id="closeBtn">Cancel</button>
+                        </form>
+                    </div>
+                </div>
+            `;
+
+            // Append the popup container to the body
+            document.body.insertAdjacentHTML('beforeend', popupContainer);
+
+            // Close the popup when "Cancel" is clicked
+            document.getElementById('closeBtn').addEventListener('click', () => {
+                closePopup();
+            });
+
+
+            // Close the popup with a transition
+            function closePopup() {
+                const popupOverlay = document.querySelector('.popup-overlay');
+                popupOverlay.style.opacity = '0';
+                document.querySelector('.popup-container').style.transform = 'scale(0.8)';
+                setTimeout(() => {
+                    popupOverlay.remove();
+                }, 300);
+            }
+
+            // Transition effect
+            setTimeout(() => {
+                document.querySelector('.popup-overlay').style.opacity = '1';
+                document.querySelector('.popup-container').style.transform = 'scale(1)';
+            }, 10);
+
+        }
+
+
+        async function deleteAmbulance(i) {
+            if (confirm("Delete ambulance?")) {
+                await fetch(`http://127.0.0.1:8000/ambulances/${ambulances[i].id}`, {
+                    method: 'DELETE'
+                });
+                fetchAmbulances();
+            }
+        }
+
+        function logout() {
+            alert('Logged out!');
+            // location.href = '/login.html';
+        }
+        function uploadDoctorImage(i) {
+            let input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = e => {
+                let file = e.target.files[0];
+                if (!file) return;
+                let reader = new FileReader();
+                reader.onload = function(evt) {
+                    doctors[i].image = evt.target.result;
+                    renderDoctors();
+                    updateDashboard();
+                };
+                reader.readAsDataURL(file);
+            };
+            input.click();
+        }
+        function uploadExperimentImage(i) {
+            let input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = e => {
+                let file = e.target.files[0];
+                if (!file) return;
+                let reader = new FileReader();
+                reader.onload = function(evt) {
+                    experiments[i].image = evt.target.result;
+                    renderExperiments();
+                    updateDashboard();
+                };
+                reader.readAsDataURL(file);
+            };
+            input.click();
+        }
+        function uploadMedicineImage(i) {
+            let input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = e => {
+                let file = e.target.files[0];
+                if (!file) return;
+                let reader = new FileReader();
+                reader.onload = function(evt) {
+                    medicines[i].image = evt.target.result;
+                    renderMedicines();
+                    updateDashboard();
+                };
+                reader.readAsDataURL(file);
+            };
+            input.click();
+        }
+
+        window.toggleSectionVisibility = toggleSectionVisibility;
+        window.showSection = showSection;
+        window.addDoctor = addDoctor;
+        window.editDoctor = editDoctor;
+        window.deleteDoctor = deleteDoctor;
+        window.addExperiment = addExperiment;
+        window.editExperiment = editExperiment;
+        window.deleteExperiment = deleteExperiment;
+        window.addAppointment = addAppointment;
+        window.editAppointment = editAppointment;
+        window.deleteAppointment = deleteAppointment;
+        window.addMedicine = addMedicine;
+        window.editMedicine = editMedicine;
+        window.deleteMedicine = deleteMedicine;
+        window.uploadDoctorImage = uploadDoctorImage;
+        window.uploadExperimentImage = uploadExperimentImage;
+        window.uploadMedicineImage = uploadMedicineImage;
+        window.changeQuantity = changeQuantity;
+        window.logout = logout;
+        window.editAmbulance = editAmbulance;
+        window.deleteAmbulance = deleteAmbulance;
+        window.renderAmbulances = renderAmbulances;
+        window.renderMedicines = renderMedicines;
+        window.renderExperiments = renderExperiments;
+        window.renderDoctors = renderDoctors;
+        window.fetchDoctors = fetchDoctors;
+        window.fetchExperiments = fetchExperiments;
+        window.fetchMedicines = fetchMedicines;
+        window.fetchAmbulances = fetchAmbulances;
+        window.addAmbulance = addAmbulance;
+        
+        // Initial render
+        updateDashboard();
+        renderDoctors();
+        renderExperiments();
+        renderAppointments();
+        renderMedicines();
+        fetchAmbulances();
+
+
+    </script>
+</body>
+</html>
