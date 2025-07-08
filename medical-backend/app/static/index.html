@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CUET Medical Center</title>
+
+    <!-- font awesome cdn link  -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- custom css file link  -->
+    <link rel="stylesheet" href="./css/style.css">
+    <style>
+        /* Animations and transitions */
+        body {
+            background: linear-gradient(135deg, #e0f2fe 0%, #f5faff 100%);
+            transition: background 1s;
+        }
+        .home .row, .about .box, .card .box, .review .box, .blog .box, .contact .row {
+            opacity: 0;
+            transform: translateY(40px);
+            animation: fadeInUp 1s forwards;
+        }
+        .home .row { animation-delay: 0.2s; }
+        .about .box:nth-child(1) { animation-delay: 0.3s; }
+        .about .box:nth-child(2) { animation-delay: 0.5s; }
+        .about .box:nth-child(3) { animation-delay: 0.7s; }
+        .card .box:nth-child(1) { animation-delay: 0.3s; }
+        .card .box:nth-child(2) { animation-delay: 0.5s; }
+        .card .box:nth-child(3) { animation-delay: 0.7s; }
+        .review .box:nth-child(1) { animation-delay: 0.3s; }
+        .review .box:nth-child(2) { animation-delay: 0.5s; }
+        .review .box:nth-child(3) { animation-delay: 0.7s; }
+        .blog .box:nth-child(1) { animation-delay: 0.3s; }
+        .blog .box:nth-child(2) { animation-delay: 0.5s; }
+        .blog .box:nth-child(3) { animation-delay: 0.7s; }
+        .contact .row { animation-delay: 0.3s; }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        /* Button hover effect */
+        .button {
+            transition: background 0.3s, color 0.3s, transform 0.2s, border-radius 0.8s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .button:hover {
+            background: linear-gradient(90deg, #0188df 60%, #1a355b 100%);
+            color: #fff;
+            transform: translateY(-2px) scale(1.04);
+            box-shadow: 0 4px 16px #0188df33;
+            border-radius: 40px;
+        }
+        /* Card hover effect */
+        .box {
+            transition: box-shadow 0.3s, transform 0.2s, border-radius 0.4s;
+        }
+        .box:hover {
+            box-shadow: 0 8px 32px #0188df22, 0 1.5px 8px #0001;
+            transform: translateY(-8px) scale(1.03);
+            z-index: 2;
+            border-radius: 60px;
+        }
+
+        .box-container .box{
+            border-radius: 5px;
+        }
+
+        .box-container .box:hover{
+            box-shadow: 0 8px 32px #0188df22, 0 1.5px 8px #0001;
+            transform: translateY(-8px) scale(1.03);
+            z-index: 2;
+            border-radius: 60px;
+        }
+
+
+
+
+
+        /* Heading animation */
+        .heading {
+            position: relative;
+            overflow: hidden;
+            transform: scale(1.03);
+        }
+        .heading:hover {
+            transform: scale(1.05);
+        }
+        .heading::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, #0188df 60%, #1a355b 100%);
+            margin: 1rem auto 0 auto;
+            border-radius: 2px;
+            animation: slideIn 1.2s;
+        }
+        @keyframes slideIn {
+            from { width: 0; }
+            to { width: 60px; }
+        }
+        /* Animated floating medical icon */
+        .floating-medical-icon {
+            position: fixed;
+            top: 85%;
+            left: 90%;
+            width: 120px;
+            height: 125px;
+            z-index: 100;
+            opacity: 0.50;
+            animation: floatY 2.5s ease-in-out infinite alternate;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+        }
+        @keyframes floatY {
+            0% { transform: translateY(0);}
+            100% { transform: translateY(-20px);}
+        }
+        /* Footer animation */
+        .footer {
+            animation: fadeInUp 1.2s;
+        }
+        /* Social icon hover */
+        .footer .box a:hover {
+            color: #0188df;
+            letter-spacing: 1px;
+            transition: color 0.2s, letter-spacing 0.2s;
+        }
+        /* Responsive for animation delays */
+        @media (max-width: 900px) {
+            .floating-medical-icon { display: none; }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Animated floating medical icon (CUET logo as example) -->
+    <img src="./images/cuet_logo.png" alt="CUET Logo" class="floating-medical-icon">
+
+    <header>
+        <a href="index.html" class="logo"><span>C</span>UET <span>M</span>edical <span>C</span>enter</a>
+        <nav class="navbar">
+            <ul>
+                <li><a href="index.html#home">Home</a></li>
+                <li><a href="index.html#about">Services</a></li>
+                <li><a href="index.html#doctor">Doctor</a></li>
+                <li><a href="index.html#review">Review</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+                <li><a href="index.html#blog">Blog</a></li>
+                <li id="user-menu" style="display:none;">
+                    <a href="my_profile.html"><i class="fa fa-user-circle"></i></a>
+                </li>
+                <li id="auth-buttons" style="display:none;">
+                    <a href="login.html" style="margin-right:10px;">Login</a>
+                    <a href="signup.html">Signup</a>
+                </li>
+            </ul>
+        </nav>
+        <div class="fas fa-bars"></div>
+    </header>
+
+    <section id="home" class="home">
+        <div class="row">
+            <!-- home images  -->
+            <div class="images">
+                <img src="./images/home.png" alt="">
+            </div>
+            <!-- home heading  -->
+            <div class="content">
+                <h1><span>Stay</span> Safe, <span>Stay</span> Healthy.</h1>
+                <p>Welcome to our medical center.</p>
+                <a href="#"><button class="button">read more</button></a>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="about">
+        <h1 class="heading">Our Services</h1>
+        <h3 class="title">Learn and explore our services</h3>
+        <div class="box-container">
+            <!-- start here  -->
+            <div class="box">
+                <div class="images">
+                    <img src="./images/about-1.png" alt="" style="height: 430px; width: 430px;">
+                </div>
+                <div class="content">
+                    <h3>Ambulance Services</h3>
+                    <p>Our ambulance services are available 24/7.</p>
+                    <a href="ambulance.html"><button class="button">Learn More</button></a>   
+                </div>
+            </div>
+            <!-- end here  -->
+            <div class="box">
+                <div class="images">
+                    <img src="./images/about-2.png" alt="" style="height: 430px; width: 430px;">
+                </div>
+                <div class="content">
+                    <h3>Available Experiments</h3>
+                    <p>Many medical experiments are conducted to improve patient care and treatment outcomes.</p>
+                    <a href="available_experiments.html"><button class="button">Learn More</button></a>   
+                </div>
+            </div>
+            <!-- end here  -->
+            <div class="box">
+                <div class="images">
+                    <img src="./images/about-3.png" alt="" style="height: 390px; width: 430px;">
+                </div>
+                <div class="content">
+                    <h3>Free Check-ups & Medicines</h3>
+                    <p>We provide free health check-ups and essential medicines to ensure the well-being of our community.</p>
+                    <a href="medicine.html"><button class="button">learn more</button></a>   
+                </div>
+            </div>
+            <!-- end here  -->
+        </div>
+    </section>
+
+    <!-- card section start  -->
+    <section id="doctor" class="card">
+        <div class="container">
+            <h1 class="heading">Doctors</h1>
+            <h3 class="title">Our Professional Doctors</h3>
+            <div class="box-container">
+                <!-- Doctor 1 -->
+                <div class="box">
+                    <img src="./images/doctor-1.jpg" alt="">                
+                    <div class="content">
+                        <a href="#"><h2>Dr. Ilias Khan</h2></a>
+                        <p>Cardiologist, 15+ years experience.</p>
+                        <div class="icons">
+                            <a href="#" class="fab fa-facebook-f"></a>
+                            <a href="#" class="fab fa-twitter"></a>
+                            <a href="#" class="fab fa-instagram"></a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Doctor 2 -->
+                <div class="box">
+                    <img src="./images/doctor-2.jpg" alt="">                
+                    <div class="content">
+                        <a href="#"><h2>Dr. Ayesha Khan</h2></a>
+                        <p>Dermatologist, 10+ years experience.</p>
+                        <div class="icons">
+                            <a href="#" class="fab fa-facebook-f"></a>
+                            <a href="#" class="fab fa-twitter"></a>
+                            <a href="#" class="fab fa-instagram"></a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Doctor 3 -->
+                <div class="box">
+                    <img src="./images/doctor-3.jpg" alt="">                
+                    <div class="content">
+                        <a href="#"><h2>Dr. Akbar Shah</h2></a>
+                        <p>General Physician, 8+ years experience.</p>
+                        <div class="icons">
+                            <a href="#" class="fab fa-facebook-f"></a>
+                            <a href="#" class="fab fa-twitter"></a>
+                            <a href="#" class="fab fa-instagram"></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Single Learn More button for all doctors -->
+            <div style="text-align:center; margin-top:2.5rem;">
+                <a href="doctor.html"><button class="button" style="min-width:18rem;">Learn More</button></a>
+            </div>
+        </div>
+    </section>
+    <!-- card section end  -->
+
+    <!-- review section start  -->
+    <section id="review" class="review">
+        <h1 class="heading">our patient reviews</h1>
+        <h3 class="title">what our patients say about us</h3>
+        <div class="box-container">
+            <div class="box">
+                <i class="fas fa-quote-left"></i>
+                <p>The staff was very friendly and the doctors provided excellent care. I felt safe and well taken care of during my visit.</p>
+                <div class="images">
+                    <img src="./images/img-1.jpg" alt="">
+                    <div class="info">
+                        <h3>Mahmuda Khanom</h3>
+                        <span>Date: June 2024</span>
+                    </div>
+                </div>
+            </div>
+            <div class="box">
+                <i class="fas fa-quote-left"></i>
+                <p>I am grateful for the quick response of the ambulance team and the professionalism of the emergency room staff.</p>
+                <div class="images">
+                    <img src="./images/img-2.jpg" alt="">
+                    <div class="info">
+                        <h3>john doe</h3>
+                        <span>Date: June 2024</span>
+                    </div>
+                </div>
+            </div>
+            <div class="box">
+                <i class="fas fa-quote-left"></i>
+                <p>The free check-up service helped me detect a health issue early. Thank you for your excellent care and support!</p>
+                <div class="images">
+                    <img src="./images/img-3.jpg" alt="">
+                    <div class="info">
+                        <h3>Mahi Abdullah</h3>
+                        <span>Date: June 2024</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- review section end  -->
+ 
+    <!-- contact section start  -->
+    <section id="contact" class="contact">
+        <h1 class="heading">contact us</h1>
+        <h3 class="title">You can reach out to us at any time.</h3>
+        <div class="row">
+            <div class="images">
+                <img src="./images/form.png" alt="">
+            </div>
+            <div class="form-container">    
+                <input type="text" placeholder="Full Name" name="" id="">
+                <input type="email" placeholder="Enter your email" name="" id="">
+                <input type="number" placeholder="Phone" name="" id="">
+                <textarea name="" cols="30" rows="10" id="" placeholder="Your message"></textarea>
+                <input type="submit" value="Send">
+            </div>
+        </div>
+    </section>
+    <!-- contact section end  -->
+
+    <!-- blog section start  -->
+    <section id="blog" class="blog">
+        <h1 class="heading">blog</h1>
+        <h3 class="title">Read our latest health articles and news.</h3>
+        <div class="box-container">
+            <div class="box">
+                <img src="./images/blog 1.png" alt="">
+                <div class="content">
+                    <a href="#">
+                        <h2>Diabetes</h2>
+                    </a>
+                    <p>Learn about diabetes, its symptoms, prevention, and how to manage your health effectively.</p>
+                    <a href="#"> <button class="button">learn more</button></a>
+                </div>
+            </div>
+            <div class="box">
+                <img src="./images/blog 2.png" alt="">
+                <div class="content">
+                    <a href="#">
+                        <h2>COVID-19 Vaccine</h2>
+                    </a>
+                    <p>Get the latest updates on COVID-19 vaccines, their benefits, and how to protect yourself and your family.</p>
+                    <a href="#"> <button class="button">learn more</button></a>
+                </div>
+            </div>
+            <div class="box">
+                <img src="./images/blog 3.png" alt="">
+                <div class="content">
+                    <a href="#">
+                        <h2>Prevent Epidemic</h2>
+                    </a>
+                    <p>Discover tips and strategies to prevent the spread of epidemics and keep your community healthy.</p>
+                    <a href="#"> <button class="button">learn more</button></a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- blog section end  -->
+
+    <!-- footer section start  -->
+    <section class="footer">
+        <div class="box">
+            <h2 class="logo"><span>D</span>octors <span>C</span>ares</h2>
+            <p>We are committed to providing quality healthcare services and ensuring the well-being of our patients and community.</p>
+        </div>
+        <div class="box">
+            <h2 class="logo"><span>S</span>hare</h2>
+            <a href="#">Facebook</a>
+            <a href="#">Twitter</a>
+            <a href="#">Instagram</a>
+            <a href="#">Pinterest</a>
+        </div>
+        <div class="box">
+            <h2 class="logo"><span>L</span>inks</h2>
+            <a href="index.html#home">Home</a>
+            <a href="index.html#about">Services</a>
+            <a href="index.html#doctor">Doctor</a>
+            <a href="index.html#review">Review</a>
+            <a href="index.html#contact">Contact</a>
+            <a href="index.html#blog">Blog</a>
+        </div>
+        <h1 class="credit">Created by <span>HME Group</span>. All rights reserved.</h1>
+    </section>
+    <!-- footer section end  -->
+
+    <!-- jquery cdn link  -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <!-- custom js file link  -->
+    <script src="./js/main.js"></script>
+    <script>
+        function animateOnScroll() {
+            document.querySelectorAll('.home .row, .about .box, .card .box, .review .box, .blog .box, .contact .row').forEach(function(el) {
+                var rect = el.getBoundingClientRect();
+                if (rect.top < window.innerHeight - 60) {
+                    el.style.animationPlayState = 'running';
+                }
+            });
+        }
+        window.addEventListener('scroll', animateOnScroll);
+        window.addEventListener('DOMContentLoaded', animateOnScroll);
+
+        document.addEventListener('DOMContentLoaded', function() {
+            let isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            
+            if (isLoggedIn) {
+                document.getElementById('user-menu').style.display = 'inline-block';
+                document.getElementById('auth-buttons').style.display = 'none';
+            } else {
+                document.getElementById('user-menu').style.display = 'none';
+                document.getElementById('auth-buttons').style.display = 'inline-block';
+            }
+        });
+    </script>
+</body>
+</html>

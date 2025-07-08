@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Available Experiments | CUET Medical Center</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <style>
+        body {
+            background: #f5faff;
+        }
+        .experiment-list-section {
+            max-width: 1000px;
+            margin: 11rem auto 4rem auto;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px #00bfff11;
+            padding: 3.5rem 2.5rem;
+            animation: fadeInUp 1.2s;
+        }
+        .experiment-list-section h1 {
+            text-align: center;
+            color: #0188df;
+            margin-bottom: 3rem;
+            font-size: 3.2rem;
+            letter-spacing: 1px;
+            position: relative;
+        }
+        .experiment-list-section h1::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, #0188df 60%, #1a355b 100%);
+            margin: 1rem auto 0 auto;
+            border-radius: 2px;
+            animation: slideIn 1.2s;
+        }
+        @keyframes slideIn {
+            from { width: 0; }
+            to { width: 60px; }
+        }
+        .experiment-list {
+            display: flex;
+            flex-direction: column;
+            gap: 3.5rem;
+        }
+        .experiment-card {
+            display: flex;
+            align-items: flex-start;
+            background: #f8fcff;
+            border-radius: 14px;
+            box-shadow: 0 4px 16px #00bfff11;
+            padding: 3rem 2.5rem;
+            gap: 3.5rem;
+            opacity: 0;
+            transform: translateY(40px);
+            animation: fadeInUp 1s forwards;
+        }
+        .experiment-card:nth-child(1) { animation-delay: 0.2s; }
+        .experiment-card:nth-child(2) { animation-delay: 0.4s; }
+        .experiment-card:nth-child(3) { animation-delay: 0.6s; }
+        .experiment-card img {
+            width: 160px;
+            height: 110px;
+            border-radius: 18px;
+            object-fit: cover;
+            margin-top: 0.5rem;
+            flex-shrink: 0;
+            border: 3px solid #0188df33;
+            box-shadow: 0 2px 12px #0188df22;
+            background: #e0f2fe;
+        }
+        .experiment-info {
+            flex: 1;
+        }
+        .experiment-info h2 {
+            color: #0188df;
+            font-size: 2.2rem;
+            margin-bottom: 1.2rem;
+            letter-spacing: 1px;
+        }
+        .experiment-info p {
+            font-size: 1.3rem;
+            margin: 0.7rem 0;
+            color: #222;
+        }
+        .experiment-info .badge {
+            display: inline-block;
+            background: linear-gradient(90deg, #0188df 60%, #1a355b 100%);
+            color: #fff;
+            border-radius: 16px;
+            padding: 0.4rem 1.3rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            margin-right: 1rem;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px #0188df11;
+            animation: badgePop 1.2s;
+        }
+        @keyframes badgePop {
+            0% { transform: scale(0.7); opacity: 0; }
+            60% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+        .experiment-info .lead {
+            color: #1a355b;
+            font-size: 1.15rem;
+            margin-bottom: 0.7rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .experiment-info .lead i {
+            color: #0188df;
+            font-size: 1.2rem;
+        }
+        .experiment-info .status {
+            display: inline-block;
+            margin-top: 0.5rem;
+            font-size: 1.1rem;
+            color: #fff;
+            background: #0188df;
+            border-radius: 12px;
+            padding: 0.2rem 1rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px #0188df11;
+        }
+        .experiment-info .contact-btn {
+            margin-top: 1.5rem;
+        }
+        .experiment-info .contact-btn button {
+            background: #0188df;
+            color: #fff;
+            border: none;
+            padding: 1rem 3rem;
+            border-radius: 28px;
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+            box-shadow: 0 2px 8px #0188df22;
+        }
+        .experiment-info .contact-btn button:hover {
+            background: #005fa3;
+            transform: translateY(-2px) scale(1.04);
+        }
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        /* Responsive */
+        @media (max-width: 900px) {
+            .experiment-list-section {
+                padding: 2rem 0.5rem;
+            }
+            .experiment-card {
+                padding: 2rem 1rem;
+                gap: 1.5rem;
+            }
+            .experiment-card img {
+                width: 110px;
+                height: 80px;
+            }
+            .experiment-info h2 {
+                font-size: 1.5rem;
+            }
+            .experiment-info p {
+                font-size: 1.1rem;
+            }
+        }
+        @media (max-width: 600px) {
+            .experiment-card {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 1.2rem;
+            }
+            .experiment-card img {
+                margin: 0 auto;
+            }
+            .experiment-info h2 {
+                font-size: 1.2rem;
+            }
+            .experiment-info p {
+                font-size: 1rem;
+            }
+        }
+        .floating-medical-icon {
+            position: fixed;
+            top: 85%;
+            left: 90%;
+            width: 120px;
+            height: 125px;
+            z-index: 100;
+            opacity: 0.50;
+            animation: floatY 2.5s ease-in-out infinite alternate;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+        }
+        @keyframes floatY {
+            0% { transform: translateY(0);}
+            100% { transform: translateY(-20px);}
+        }
+        @media (max-width: 900px) {
+            .floating-medical-icon { display: none; }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+</head>
+<body>
+    <header>
+        <a href="index.html" class="logo"><span>C</span>UET <span>M</span>edical <span>C</span>enter</a>
+        <nav class="navbar">
+            <ul>
+                <li><a href="index.html#home">Home</a></li>
+                <li><a href="index.html#about">Services</a></li>
+                <li><a href="index.html#doctor">Doctor</a></li>
+                <li><a href="index.html#review">Review</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+                <li><a href="index.html#blog">Blog</a></li>
+                <li id="user-menu" style="display:none;">
+                    <a href="my_profile.html"><i class="fa fa-user-circle"></i></a>
+                </li>
+                <li id="auth-buttons" style="display:none;">
+                    <a href="login.html" style="margin-right:10px;">Login</a>
+                    <a href="signup.html">Signup</a>
+                </li>
+            </ul>
+        </nav>
+        <div class="fas fa-bars"></div>
+    </header>
+
+    <section>
+        <div class="experiment-list-section">
+            <h1>Available Experiments</h1>
+            <div class="experiment-list" id="experiment-list">
+                <!-- JS will fill this -->
+            </div>
+        </div>
+    </section>
+
+    <section class="footer">
+        <div class="box">
+            <h2 class="logo"><span>C</span>UET <span>M</span>edical <span>C</span>enter</h2>
+            <p>We are committed to providing quality healthcare services and ensuring the well-being of our patients and community.</p>
+        </div>
+        <div class="box">
+            <h2 class="logo"><span>S</span>hare</h2>
+            <a href="#">Facebook</a>
+            <a href="#">Twitter</a>
+            <a href="#">Instagram</a>
+            <a href="#">Pinterest</a>
+        </div>
+        <div class="box">
+            <h2 class="logo"><span>L</span>inks</h2>
+            <a href="index.html#home">Home</a>
+            <a href="index.html#about">Services</a>
+            <a href="index.html#doctor">Doctor</a>
+            <a href="index.html#review">Review</a>
+            <a href="index.html#contact">Contact</a>
+            <a href="index.html#blog">Blog</a>
+        </div>
+        <h1 class="credit">Created by <span>HME Group</span>. All rights reserved.</h1>
+    </section>
+    <script>
+        async function fetchExperiments(){
+            const res = await fetch('http://127.0.0.1:8000/experiments');
+            const experiments = await res.json();
+            renderExperimentList(experiments);
+        }
+
+        function renderExperimentList(experiments) {
+            document.getElementById('experiment-list').innerHTML = experiments.map(e => `
+                <div class="experiment-card">
+                    <img src="${e.image}" alt="${e.name}">
+                    <div class="experiment-info">
+                        <span class="badge">${e.type}</span>
+                        <h2>${e.name}</h2>
+                        <div class="lead"><i class="fa-solid fa-user"></i> <b>Lead:</b> ${e.lead}</div>
+                        <span class="status" style="background:${e.status==='Ongoing'?'#0188df':'#1a9f4b'}">${e.status}</span>
+                        <p>${e.description}</p>
+                        <div class="contact-btn">
+                            <a href="index.html#contact">
+                                <button><i class="fa-solid fa-envelope"></i> Contact for Info</button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        fetchExperiments();
+    </script>
+    <script>
+    // Animate experiment cards on scroll
+    function animateExperimentCards() {
+        document.querySelectorAll('.experiment-card').forEach(function(el) {
+            var rect = el.getBoundingClientRect();
+            if (rect.top < window.innerHeight - 60) {
+                el.style.animationPlayState = 'running';
+            }
+        });
+    }
+    window.addEventListener('scroll', animateExperimentCards);
+    window.addEventListener('DOMContentLoaded', animateExperimentCards);
+
+    document.addEventListener('DOMContentLoaded', function() {
+            let isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            
+            if (isLoggedIn) {
+                document.getElementById('user-menu').style.display = 'inline-block';
+                document.getElementById('auth-buttons').style.display = 'none';
+            } else {
+                document.getElementById('user-menu').style.display = 'none';
+                document.getElementById('auth-buttons').style.display = 'inline-block';
+            }
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="./js/main.js"></script>
+    <img src="./images/cuet_logo.png" alt="CUET Logo" class="floating-medical-icon">
+</body>
+</html>

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Check-ups & Medicines | CUET Medical Center</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <style>
+        body {
+            background: #f5faff;
+        }
+        .medicine-list-section {
+            max-width: 1000px;
+            margin: 11rem auto 4rem auto;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px #00bfff11;
+            padding: 3.5rem 2.5rem;
+            animation: fadeInUp 1.2s;
+        }
+        .medicine-list-section h1 {
+            text-align: center;
+            color: #0188df;
+            margin-bottom: 3rem;
+            font-size: 3.2rem;
+            letter-spacing: 1px;
+            position: relative;
+        }
+        .medicine-list-section h1::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, #0188df 60%, #1a355b 100%);
+            margin: 1rem auto 0 auto;
+            border-radius: 2px;
+            animation: slideIn 1.2s;
+        }
+        @keyframes slideIn {
+            from { width: 0; }
+            to { width: 60px; }
+        }
+        .medicine-list {
+            display: flex;
+            flex-direction: column;
+            gap: 3.5rem;
+        }
+        .medicine-card {
+            display: flex;
+            align-items: flex-start;
+            background: #f8fcff;
+            border-radius: 14px;
+            box-shadow: 0 4px 16px #00bfff11;
+            padding: 3rem 2.5rem;
+            gap: 3.5rem;
+            opacity: 0;
+            transform: translateY(40px);
+            animation: fadeInUp 1s forwards;
+        }
+        .medicine-card:nth-child(1) { animation-delay: 0.2s; }
+        .medicine-card:nth-child(2) { animation-delay: 0.4s; }
+        .medicine-card:nth-child(3) { animation-delay: 0.6s; }
+        .medicine-card img {
+            width: 120px;
+            height: 120px;
+            border-radius: 18px;
+            object-fit: cover;
+            margin-top: 0.5rem;
+            flex-shrink: 0;
+            border: 3px solid #0188df33;
+            box-shadow: 0 2px 12px #0188df22;
+            background: #e0f2fe;
+        }
+        .medicine-info {
+            flex: 1;
+        }
+        .medicine-info h2 {
+            color: #0188df;
+            font-size: 2.2rem;
+            margin-bottom: 1.2rem;
+            letter-spacing: 1px;
+        }
+        .medicine-info p {
+            font-size: 1.3rem;
+            margin: 0.7rem 0;
+            color: #222;
+        }
+        .medicine-info .badge {
+            display: inline-block;
+            background: linear-gradient(90deg, #0188df 60%, #1a355b 100%);
+            color: #fff;
+            border-radius: 16px;
+            padding: 0.4rem 1.3rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            margin-right: 1rem;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px #0188df11;
+            animation: badgePop 1.2s;
+        }
+        @keyframes badgePop {
+            0% { transform: scale(0.7); opacity: 0; }
+            60% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+        .medicine-info .quantity {
+            color: #1a355b;
+            font-size: 1.15rem;
+            margin-bottom: 0.7rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .medicine-info .quantity i {
+            color: #0188df;
+            font-size: 1.2rem;
+        }
+        .medicine-info .contact-btn {
+            margin-top: 1.5rem;
+        }
+        .medicine-info .contact-btn button {
+            background: #0188df;
+            color: #fff;
+            border: none;
+            padding: 1rem 3rem;
+            border-radius: 28px;
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+            box-shadow: 0 2px 8px #0188df22;
+        }
+        .medicine-info .contact-btn button:hover {
+            background: #005fa3;
+            transform: translateY(-2px) scale(1.04);
+        }
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        /* Responsive */
+        @media (max-width: 900px) {
+            .medicine-list-section {
+                padding: 2rem 0.5rem;
+            }
+            .medicine-card {
+                padding: 2rem 1rem;
+                gap: 1.5rem;
+            }
+            .medicine-card img {
+                width: 80px;
+                height: 80px;
+            }
+            .medicine-info h2 {
+                font-size: 1.5rem;
+            }
+            .medicine-info p {
+                font-size: 1.1rem;
+            }
+        }
+        @media (max-width: 600px) {
+            .medicine-card {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 1.2rem;
+            }
+            .medicine-card img {
+                margin: 0 auto;
+            }
+            .medicine-info h2 {
+                font-size: 1.2rem;
+            }
+            .medicine-info p {
+                font-size: 1rem;
+            }
+        }
+        .floating-medical-icon {
+            position: fixed;
+            top: 85%;
+            left: 90%;
+            width: 120px;
+            height: 125px;
+            z-index: 100;
+            opacity: 0.50;
+            animation: floatY 2.5s ease-in-out infinite alternate;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+        }
+        @keyframes floatY {
+            0% { transform: translateY(0);}
+            100% { transform: translateY(-20px);}
+        }
+        @media (max-width: 900px) {
+            .floating-medical-icon { display: none; }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+</head>
+<body>
+    <header>
+        <a href="index.html" class="logo"><span>C</span>UET <span>M</span>edical <span>C</span>enter</a>
+        <nav class="navbar">
+            <ul>
+                <li><a href="index.html#home">Home</a></li>
+                <li><a href="index.html#about">Services</a></li>
+                <li><a href="index.html#doctor">Doctor</a></li>
+                <li><a href="index.html#review">Review</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+                <li><a href="index.html#blog">Blog</a></li>
+                <li id="user-menu" style="display:none;">
+                    <a href="my_profile.html"><i class="fa fa-user-circle"></i></a>
+                </li>
+                <li id="auth-buttons" style="display:none;">
+                    <a href="login.html" style="margin-right:10px;">Login</a>
+                    <a href="signup.html">Signup</a>
+                </li>
+            </ul>
+        </nav>
+        <div class="fas fa-bars"></div>
+    </header>
+
+    <section>
+        <div class="medicine-list-section">
+            <h1>Available Medicines</h1>
+            <div class="medicine-list" id="medicine-list">
+                <!-- JS will fill this -->
+            </div>
+        </div>
+    </section>
+
+    <section class="footer">
+        <div class="box">
+            <h2 class="logo"><span>C</span>UET <span>M</span>edical <span>C</span>enter</h2>
+            <p>We are committed to providing quality healthcare services and ensuring the well-being of our patients and community.</p>
+        </div>
+        <div class="box">
+            <h2 class="logo"><span>S</span>hare</h2>
+            <a href="#">Facebook</a>
+            <a href="#">Twitter</a>
+            <a href="#">Instagram</a>
+            <a href="#">Pinterest</a>
+        </div>
+        <div class="box">
+            <h2 class="logo"><span>L</span>inks</h2>
+            <a href="index.html#home">Home</a>
+            <a href="index.html#about">Services</a>
+            <a href="index.html#doctor">Doctor</a>
+            <a href="index.html#review">Review</a>
+            <a href="index.html#contact">Contact</a>
+            <a href="index.html#blog">Blog</a>
+        </div>
+        <h1 class="credit">Created by <span>HME Group</span>. All rights reserved.</h1>
+    </section>
+    <script>
+        async function fetchMedicines() {
+            const res = await fetch('http://127.0.0.1:8000/medicines');
+            const medicines = await res.json();
+            renderMedicineList(medicines);
+        }
+        function renderMedicineList(medicines) {
+            document.getElementById('medicine-list').innerHTML = medicines.map(m => `
+                <div class="medicine-card">
+                    <img src="${m.image}" alt="${m.name}">
+                    <div class="medicine-info">
+                        <span class="badge">${m.type}</span>
+                        <h2>${m.name}</h2>
+                        <div class="quantity"><i class="fa-solid fa-box"></i> <b>Quantity:</b> ${m.quantity}</div>
+                        <p><b>Company:</b> ${m.company}</p>
+                        <div class="contact-btn">
+                            <a href="index.html#contact">
+                                <button><i class="fa-solid fa-envelope"></i> Request Medicine</button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        fetchMedicines();
+
+        document.addEventListener('DOMContentLoaded', function() {
+            let isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            
+            if (isLoggedIn) {
+                document.getElementById('user-menu').style.display = 'inline-block';
+                document.getElementById('auth-buttons').style.display = 'none';
+            } else {
+                document.getElementById('user-menu').style.display = 'none';
+                document.getElementById('auth-buttons').style.display = 'inline-block';
+            }
+        });
+    </script>
+    <script>
+    // Animate medicine cards on scroll
+    function animateMedicineCards() {
+        document.querySelectorAll('.medicine-card').forEach(function(el) {
+            var rect = el.getBoundingClientRect();
+            if (rect.top < window.innerHeight - 60) {
+                el.style.animationPlayState = 'running';
+            }
+        });
+    }
+    window.addEventListener('scroll', animateMedicineCards);
+    window.addEventListener('DOMContentLoaded', animateMedicineCards);
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="./js/main.js"></script>
+    <img src="./images/cuet_logo.png" alt="CUET Logo" class="floating-medical-icon">
+</body>
+</html>
